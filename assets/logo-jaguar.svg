@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 480" role="img" aria-label="Logo Jaguares NZ">
-  <!-- Jaguar de perfil con melena de flamas — rojo, negro y blanco -->
+  <!-- Jaguar rugiendo de perfil con melena de flamas — rojo, negro y blanco -->
   <g>
     <!-- Flamas rojas (capa trasera) -->
     <path fill="#E4002B" d="M230 250
@@ -36,54 +36,54 @@
       C 502 280, 466 282, 436 268
       C 402 252, 372 256, 352 232 Z"/>
 
-    <!-- Cabeza del jaguar (negro con contorno blanco) -->
-    <path fill="#0A0A0B" stroke="#FFFFFF" stroke-width="9" stroke-linejoin="round" d="M60 235
-      L 105 205
-      L 140 196
-      L 152 182
-      L 185 158
-      L 210 150
-      L 228 106
-      L 248 140
-      L 285 148
-      L 318 172
-      L 338 205
-      L 330 240
-      L 302 250
-      L 330 272
-      L 300 290
-      L 318 312
-      L 288 338
-      L 296 368
-      L 263 350
-      L 258 378
-      L 232 350
-      L 180 352
-      L 120 352
-      L 82 342
-      L 62 318
-      L 85 298
-      L 150 272
-      L 95 252
-      L 68 248
-      Z"/>
+    <!-- Interior de la boca (rojo, se recorta con las mandíbulas) -->
+    <path fill="#E4002B" d="M68 212 L 198 254 L 76 305 Z"/>
 
-    <!-- Interior de la boca (rojo) -->
-    <path fill="#E4002B" d="M76 249 L 146 269 L 81 305 Z"/>
+    <!-- Cráneo y mandíbula superior (negro con contorno blanco) -->
+    <path fill="#0A0A0B" stroke="#FFFFFF" stroke-width="8" stroke-linejoin="round" d="M40 200
+      C 60 184, 92 177, 122 180
+      C 145 181, 158 171, 172 159
+      C 196 139, 232 129, 262 135
+      L 276 98
+      C 286 113, 293 128, 296 141
+      C 332 151, 361 172, 376 202
+      C 372 238, 358 264, 336 281
+      L 352 307
+      L 315 300
+      L 326 327
+      L 293 314
+      C 276 311, 262 306, 250 300
+      C 226 284, 205 267, 188 249
+      C 158 244, 124 238, 92 230
+      C 66 224, 48 213, 40 200 Z"/>
 
-    <!-- Colmillo (blanco) -->
-    <path fill="#FFFFFF" d="M86 250 L 112 257 L 93 297 Z"/>
+    <!-- Mandíbula inferior (negro con contorno blanco) -->
+    <path fill="#0A0A0B" stroke="#FFFFFF" stroke-width="8" stroke-linejoin="round" d="M200 258
+      C 166 278, 124 294, 90 302
+      L 70 310
+      C 80 328, 106 339, 140 336
+      C 178 332, 213 316, 233 296
+      C 221 280, 210 268, 200 258 Z"/>
+
+    <!-- Dientes superiores (blanco) -->
+    <path fill="#FFFFFF" d="M88 230 L 112 235 L 98 274 Z"/>
+    <path fill="#FFFFFF" d="M124 238 L 143 241 L 132 262 Z"/>
+    <path fill="#FFFFFF" d="M153 244 L 170 247 L 160 262 Z"/>
+
+    <!-- Dientes inferiores (blanco) -->
+    <path fill="#FFFFFF" d="M92 300 L 111 293 L 103 272 Z"/>
+    <path fill="#FFFFFF" d="M126 291 L 143 285 L 134 269 Z"/>
 
     <!-- Nariz (rojo) -->
-    <path fill="#E4002B" d="M64 228 L 80 220 L 76 234 Z"/>
+    <path fill="#E4002B" d="M42 196 L 62 188 L 57 202 Z"/>
 
     <!-- Ojo (rojo, agresivo) -->
-    <path fill="#E4002B" d="M150 208 L 194 199 L 174 222 Z"/>
+    <path fill="#E4002B" d="M178 190 L 228 182 L 205 205 Z"/>
 
     <!-- Manchas de jaguar (blanco sutil) -->
-    <circle cx="240" cy="230" r="8" fill="#FFFFFF" opacity=".25"/>
-    <circle cx="272" cy="258" r="6" fill="#FFFFFF" opacity=".22"/>
-    <circle cx="245" cy="292" r="5" fill="#FFFFFF" opacity=".18"/>
-    <circle cx="205" cy="260" r="5" fill="#FFFFFF" opacity=".15"/>
+    <circle cx="270" cy="215" r="7" fill="#FFFFFF" opacity=".22"/>
+    <circle cx="300" cy="245" r="6" fill="#FFFFFF" opacity=".2"/>
+    <circle cx="272" cy="272" r="5" fill="#FFFFFF" opacity=".16"/>
+    <circle cx="235" cy="240" r="5" fill="#FFFFFF" opacity=".14"/>
   </g>
 </svg>
