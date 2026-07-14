@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/svg+xml" href="assets/logo-jaguar.svg">
+  <link rel="icon" type="image/png" href="assets/logo-icono.png">
 
   <!-- Las animaciones de aparición solo se activan si hay JavaScript;
        sin JS, todo el contenido es visible de inmediato -->
@@ -161,7 +161,7 @@
       text-decoration: none;
       color: var(--blanco);
     }
-    .nav-marca img { width: 40px; height: 40px; }
+    .nav-marca img { height: 34px; width: auto; }
     .nav-marca .nombre {
       font-family: var(--fuente-display);
       font-size: 1.15rem;
@@ -446,6 +446,85 @@
       font-weight: 700;
     }
     .patrocinador .info strong { font-size: 1.05rem; }
+
+    /* ---------- Misión / Visión / Valores / Beneficios ---------- */
+    .mvv-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 56px;
+    }
+    .tarjeta-mvv {
+      background: var(--grafito);
+      border: 1px solid rgba(255,255,255,.1);
+      border-left: 4px solid var(--rojo);
+      border-radius: var(--radio);
+      padding: 26px 26px;
+    }
+    .tarjeta-mvv h3 {
+      font-size: 1.3rem;
+      color: var(--rojo);
+      margin-bottom: 10px;
+    }
+    .tarjeta-mvv p { color: var(--gris); font-size: .95rem; }
+    .valores-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .tarjeta-valor {
+      background: var(--grafito);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: var(--radio);
+      padding: 22px 20px;
+      text-align: center;
+      transition: transform .25s ease, border-color .25s ease;
+    }
+    .tarjeta-valor:hover { transform: translateY(-6px); border-color: rgba(228,0,43,.5); }
+    .tarjeta-valor .icono-valor {
+      width: 46px; height: 46px;
+      margin: 0 auto 12px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: rgba(228,0,43,.14);
+      border: 1px solid rgba(228,0,43,.5);
+    }
+    .tarjeta-valor strong {
+      display: block;
+      font-size: .95rem;
+      margin-bottom: 6px;
+    }
+    .tarjeta-valor span { color: var(--gris); font-size: .84rem; line-height: 1.5; }
+    .beneficios {
+      margin-top: 56px;
+      background: linear-gradient(115deg, rgba(228,0,43,.14), rgba(228,0,43,.04) 60%), var(--grafito);
+      border: 1px solid rgba(228,0,43,.4);
+      border-radius: var(--radio);
+      padding: 32px 30px;
+    }
+    .beneficios h3 { font-size: 1.5rem; margin-bottom: 18px; }
+    .beneficios h3 em { color: var(--rojo); font-style: normal; }
+    .beneficios-lista {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px 28px;
+      list-style: none;
+    }
+    .beneficios-lista li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: var(--gris);
+      font-size: .95rem;
+    }
+    .beneficios-lista li svg { flex: none; margin-top: 4px; }
+    .beneficios-lista li strong { color: var(--blanco); }
+    @media (max-width: 900px) {
+      .mvv-grid, .beneficios-lista { grid-template-columns: 1fr; }
+      .valores-grid { grid-template-columns: 1fr 1fr; }
+    }
 
     /* Marco de foto con placeholder */
     .marco-foto {
@@ -951,7 +1030,7 @@
       gap: 22px;
     }
     .footer-marca { display: flex; align-items: center; gap: 12px; }
-    .footer-marca img { width: 44px; height: 44px; }
+    .footer-marca img { height: 38px; width: auto; }
     .footer-marca .nombre { font-family: var(--fuente-display); font-size: 1.2rem; }
     .footer-marca .nombre span { color: var(--rojo); }
     .footer-marca small { display: block; color: var(--gris); font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; }
@@ -1004,7 +1083,7 @@
   <header class="nav">
     <div class="contenedor nav-inner">
       <a class="nav-marca" href="#inicio" aria-label="Academia Jaguares NZ — inicio">
-        <img src="assets/logo-jaguar.svg" alt="Logo Jaguares NZ">
+        <img src="assets/logo-icono.png" alt="Logo Jaguares NZ">
         <span class="nombre">JAGUARES <span>NZ</span></span>
       </a>
       <button class="nav-burger" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu">
@@ -1050,8 +1129,7 @@
         </div>
       </div>
       <div class="hero-logo-wrap">
-        <!-- LOGO: cuando tengas el logo real, reemplaza assets/logo-jaguar.svg -->
-        <img src="assets/logo-jaguar.svg" alt="Cabeza de jaguar — logo de la Academia Jaguares NZ">
+        <img src="assets/logo-jaguares.png" alt="Logo oficial de la Academia Jaguares NZ — jaguar rojo con melena de flamas">
       </div>
     </div>
   </section>
@@ -1081,7 +1159,7 @@
           <h2 class="titulo-seccion">Formamos <em>jugadores</em>,<br>forjamos campeones</h2>
           <p>Somos una academia de baloncesto para <strong>niños y jóvenes de 5 a 17 años</strong> en San Andrés Cholula, Puebla. Entrenamos de <strong>lunes a sábado</strong> en instalaciones <strong>cerradas y techadas</strong>, con <strong>grupos limitados</strong> para garantizar atención personalizada y desarrollo real de cada jugador.</p>
           <div class="frase-central">“Somos semillero de talentos. <em>Sé parte de la familia Jaguares.</em>”</div>
-          <p>Nuestro proyecto deportivo combina disciplina, fundamentos técnicos y competencia de alto nivel: nuestras categorías compiten —y ganan— en torneos estatales y nacionales.</p>
+          <p>Somos un <strong>semillero de atletas</strong> en la entidad: desarrollamos las cualidades físicas, cognitivas y afectivas de cada jugador, orientándolo a un alto nivel de competición y propiciando oportunidades para acceder a <strong>becas deportivas</strong> en las principales instituciones educativas nacionales e internacionales.</p>
           <div class="pastillas">
             <span class="pastilla">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E4002B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
@@ -1111,6 +1189,78 @@
         <div class="marco-foto revelar" data-delay="1">
           <img src="assets/entrenador.jpg" alt="Entrenador de Jaguares NZ dando indicaciones a un jugador en la cancha techada">
         </div>
+      </div>
+
+      <div class="mvv-grid">
+        <article class="tarjeta-mvv revelar" data-delay="1">
+          <h3>Misión</h3>
+          <p>Promover, fortalecer y coordinar con excelencia en nuestra región la práctica y la enseñanza del baloncesto, manteniendo un alto nivel de competencia entre los atletas de la sociedad poblana, para contribuir al desarrollo integral de nuestros niños y jóvenes.</p>
+        </article>
+        <article class="tarjeta-mvv revelar" data-delay="2">
+          <h3>Visión</h3>
+          <p>Ser una academia reconocida a nivel nacional e internacional por su liderazgo y excelencia en el desarrollo integral deportivo, logrando que nuestros atletas desarrollen sus cualidades físicas, cognitivas y afectivas orientadas a un alto nivel de competición.</p>
+        </article>
+      </div>
+
+      <div class="valores-grid">
+        <article class="tarjeta-valor revelar" data-delay="1">
+          <div class="icono-valor">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E4002B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <strong>Trabajo en equipo y cooperación</strong>
+          <span>Fomentamos el trabajo en equipo y el apoyo entre jugadores.</span>
+        </article>
+        <article class="tarjeta-valor revelar" data-delay="2">
+          <div class="icono-valor">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E4002B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <strong>Respeto y honestidad</strong>
+          <span>Convivencia a partir de la confianza, integridad y transparencia hacia los demás.</span>
+        </article>
+        <article class="tarjeta-valor revelar" data-delay="3">
+          <div class="icono-valor">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E4002B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          </div>
+          <strong>Disciplina y compromiso</strong>
+          <span>Destacamos la importancia de la práctica constante y la superación personal.</span>
+        </article>
+        <article class="tarjeta-valor revelar" data-delay="3">
+          <div class="icono-valor">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E4002B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+          </div>
+          <strong>Perseverancia</strong>
+          <span>Priorizamos la persistencia en el trabajo para el logro de objetivos como jugadores y estudiantes.</span>
+        </article>
+      </div>
+
+      <div class="beneficios revelar">
+        <h3>Beneficios para <em>los jugadores</em></h3>
+        <ul class="beneficios-lista">
+          <li>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#E4002B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            <span>Entrenamiento en <strong>gimnasio cerrado y techado</strong></span>
+          </li>
+          <li>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#E4002B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            <span>Atención al <strong>crecimiento individual</strong> del jugador o jugadora</span>
+          </li>
+          <li>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#E4002B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            <span>Participación en <strong>competencias de alto nivel</strong> nacional e internacional</span>
+          </li>
+          <li>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#E4002B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            <span><strong>Fisioterapia y nutrición deportiva</strong> gracias al convenio con la Universidad del Valle de México, campus Puebla</span>
+          </li>
+          <li>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#E4002B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            <span><strong>Preparación física</strong> orientada al basquetbol</span>
+          </li>
+          <li>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#E4002B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            <span>Proyección y asesoramiento para <strong>becas universitarias</strong></span>
+          </li>
+        </ul>
       </div>
     </div>
   </section>
@@ -1209,7 +1359,7 @@
           <p>Entrenamiento personalizado 1 a 1 para acelerar el desarrollo individual.</p>
         </article>
       </div>
-      <p class="nota-edades revelar">Los entrenamientos son para niños y jóvenes de <strong>5 a 17 años</strong>. La asignación al bloque se define por año de nacimiento y <strong>también por el nivel de cada jugador</strong> — en tu primera visita te ubicamos en el grupo ideal.</p>
+      <p class="nota-edades revelar">Los entrenamientos son para niños y jóvenes de <strong>5 a 17 años</strong>, en ramas <strong>varonil y femenil</strong> con niveles de <strong>iniciación, intermedio y avanzado</strong>. La asignación al bloque se define por año de nacimiento y <strong>también por el nivel de cada jugador</strong> — en tu primera visita te ubicamos en el grupo ideal.</p>
 
       <div class="sede-banda revelar">
         <div class="sede-info">
@@ -1381,41 +1531,24 @@
         <p class="sub-seccion">Rojo, negro y blanco: los colores que se respetan en la duela. Toca cualquier foto para ampliarla.</p>
       </div>
 
-      <!-- GALERÍA: cuando tengas las fotos, reemplaza cada <div class="ph">
-           dentro de los botones por <img src="assets/uniforme-1.jpg" alt="..."> -->
       <div class="grid-galeria">
-        <button class="galeria-item revelar" data-delay="1" aria-label="Ampliar foto 1">
-          <div class="ph ph-cuadrada"><div class="ph-inner">
-            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M20.4 14.5 16 10 4 20"/><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/></svg>
-            <span>Uniforme local</span>
-          </div></div>
+        <button class="galeria-item revelar" data-delay="1" aria-label="Ampliar foto: jugador Jaguares tirando al aro">
+          <img src="assets/accion-linares.jpg" alt="Jugador de Jaguares NZ con uniforme rojo tirando al aro en el gimnasio techado">
         </button>
-        <button class="galeria-item revelar" data-delay="2" aria-label="Ampliar foto 2">
-          <div class="ph ph-cuadrada"><div class="ph-inner">
-            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M20.4 14.5 16 10 4 20"/><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/></svg>
-            <span>Uniforme visitante</span>
-          </div></div>
+        <button class="galeria-item revelar" data-delay="2" aria-label="Ampliar foto: Copa Puebla Sports">
+          <img src="assets/copa-puebla.jpg" alt="Jugador de Jaguares NZ en acción durante la Copa Puebla Sports">
         </button>
         <button class="galeria-item revelar" data-delay="3" aria-label="Ampliar foto del equipo en el torneo 3x3">
           <img src="assets/equipo-3x3.jpg" alt="Equipo Jaguares NZ con sus uniformes rojos en el 3UT3 National Tournament">
         </button>
-        <button class="galeria-item revelar" data-delay="1" aria-label="Ampliar foto 4">
-          <div class="ph ph-cuadrada"><div class="ph-inner">
-            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M20.4 14.5 16 10 4 20"/><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/></svg>
-            <span>Premiación</span>
-          </div></div>
+        <button class="galeria-item revelar" data-delay="1" aria-label="Ampliar foto: equipo femenil">
+          <img src="assets/femenil-mayores.jpg" alt="Equipo femenil de Jaguares NZ con uniforme rojo en cancha techada">
         </button>
-        <button class="galeria-item revelar" data-delay="2" aria-label="Ampliar foto 5">
-          <div class="ph ph-cuadrada"><div class="ph-inner">
-            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M20.4 14.5 16 10 4 20"/><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/></svg>
-            <span>Entrenamiento</span>
-          </div></div>
+        <button class="galeria-item revelar" data-delay="2" aria-label="Ampliar foto: categorías menores femenil">
+          <img src="assets/femenil-menores.jpg" alt="Categoría menor femenil de Jaguares NZ con su entrenador">
         </button>
-        <button class="galeria-item revelar" data-delay="3" aria-label="Ampliar foto 6">
-          <div class="ph ph-cuadrada"><div class="ph-inner">
-            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M20.4 14.5 16 10 4 20"/><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/></svg>
-            <span>La familia Jaguares</span>
-          </div></div>
+        <button class="galeria-item revelar" data-delay="3" aria-label="Ampliar foto: la familia Jaguares">
+          <img src="assets/familia-jaguares.jpg" alt="Equipos varoniles de la familia Jaguares NZ reunidos en la duela">
         </button>
       </div>
 
@@ -1521,7 +1654,7 @@
   <footer class="footer">
     <div class="contenedor footer-inner">
       <div class="footer-marca">
-        <img src="assets/logo-jaguar.svg" alt="">
+        <img src="assets/logo-icono.png" alt="">
         <div>
           <div class="nombre">JAGUARES <span>NZ</span></div>
           <small>Semillero de Talentos</small>
