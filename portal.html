@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal Jaguares — Academia Jaguares NZ</title>
+  <meta name="description" content="Portal de jugadores de la Academia Jaguares NZ: avisos, entrenamientos y asistencia.">
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="assets/logo-icono.png">
+
+  <style>
+    :root {
+      --rojo: #E4002B;
+      --negro: #0A0A0B;
+      --carbon: #121214;
+      --grafito: #1B1B1E;
+      --blanco: #FFFFFF;
+      --gris: #B9B9BF;
+      --verde: #2ecc71;
+      --fuente-display: 'Anton', Impact, sans-serif;
+      --fuente-cuerpo: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+      --radio: 14px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--negro);
+      color: var(--blanco);
+      font-family: var(--fuente-cuerpo);
+      font-size: 16px;
+      line-height: 1.6;
+      min-height: 100svh;
+      -webkit-font-smoothing: antialiased;
+    }
+    img { max-width: 100%; }
+    .contenedor { width: min(880px, 94%); margin: 0 auto; }
+
+    h1, h2, h3 { font-family: var(--fuente-display); font-weight: 400; letter-spacing: .02em; text-transform: uppercase; }
+
+    /* ---------- Barra superior ---------- */
+    .barra {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(10,10,11,.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .barra-inner { display: flex; align-items: center; justify-content: space-between; height: 62px; width: min(880px, 94%); margin: 0 auto; }
+    .barra-marca { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--blanco); }
+    .barra-marca img { height: 30px; width: auto; }
+    .barra-marca span { font-family: var(--fuente-display); font-size: 1.02rem; }
+    .barra-marca span em { color: var(--rojo); font-style: normal; }
+    .barra-acciones { display: flex; align-items: center; gap: 10px; }
+    .hola { color: var(--gris); font-size: .85rem; font-weight: 600; }
+    .hola strong { color: var(--blanco); }
+
+    /* ---------- Botones ---------- */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 11px 20px;
+      font-family: var(--fuente-cuerpo); font-weight: 800; font-size: .86rem;
+      letter-spacing: .05em; text-transform: uppercase; text-decoration: none;
+      border: 2px solid transparent; border-radius: 8px; cursor: pointer;
+      transition: transform .15s ease, background .2s ease, border-color .2s;
+    }
+    .btn:focus-visible { outline: 3px solid var(--blanco); outline-offset: 2px; }
+    .btn-rojo { background: var(--rojo); color: var(--blanco); }
+    .btn-rojo:hover { background: #FF1741; transform: translateY(-2px); }
+    .btn-borde { background: transparent; color: var(--blanco); border-color: rgba(255,255,255,.35); }
+    .btn-borde:hover { border-color: var(--blanco); }
+    .btn-mini { padding: 7px 14px; font-size: .74rem; border-radius: 6px; }
+    .btn-verde { background: var(--verde); color: #06371c; }
+    .btn-verde:hover { background: #40dd85; }
+    .btn-gris { background: var(--grafito); color: var(--gris); border: 1px solid rgba(255,255,255,.15); }
+    .btn-gris:hover { color: var(--blanco); }
+    .btn-peligro { background: transparent; color: #ff8fa3; border: 1px solid rgba(228,0,43,.5); }
+    .btn-peligro:hover { background: rgba(228,0,43,.15); }
+
+    /* ---------- Aviso de modo demo ---------- */
+    .cinta-demo {
+      background: linear-gradient(100deg, rgba(228,0,43,.25), rgba(228,0,43,.1));
+      border-bottom: 1px solid rgba(228,0,43,.4);
+      padding: 9px 0;
+      text-align: center;
+      font-size: .8rem;
+      color: #ffb3c0;
+      font-weight: 600;
+    }
+    .cinta-demo strong { color: var(--blanco); }
+
+    /* ---------- Tarjetas / formularios ---------- */
+    section { padding: 34px 0 90px; }
+    .caja {
+      background: var(--grafito);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: var(--radio);
+      padding: 26px 24px;
+    }
+    .campo { margin-bottom: 14px; }
+    .campo label {
+      display: block; font-size: .74rem; font-weight: 800; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--gris); margin-bottom: 6px;
+    }
+    .campo input, .campo select, .campo textarea {
+      width: 100%;
+      background: var(--negro);
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 8px;
+      color: var(--blanco);
+      font-family: var(--fuente-cuerpo);
+      font-size: 1rem;
+      padding: 11px 13px;
+    }
+    .campo textarea { min-height: 84px; resize: vertical; }
+    .campo input:focus, .campo select:focus, .campo textarea:focus {
+      outline: none; border-color: var(--rojo); box-shadow: 0 0 0 3px rgba(228,0,43,.22);
+    }
+    .error {
+      background: rgba(228,0,43,.14); border: 1px solid rgba(228,0,43,.5);
+      color: #ffb3c0; border-radius: 8px; padding: 10px 14px;
+      font-size: .88rem; margin-bottom: 14px; display: none;
+    }
+    .error.visible { display: block; }
+
+    /* ---------- Login ---------- */
+    .panel-auth { max-width: 440px; margin: 30px auto 0; }
+    .panel-auth .logo-centro { display: block; width: 190px; margin: 0 auto 18px; }
+    .panel-auth h1 { text-align: center; font-size: 1.9rem; margin-bottom: 4px; }
+    .panel-auth h1 em { color: var(--rojo); font-style: normal; }
+    .panel-auth .sub { text-align: center; color: var(--gris); font-size: .9rem; margin-bottom: 22px; }
+    .tabs-auth { display: flex; gap: 8px; margin-bottom: 18px; }
+    .tabs-auth button {
+      flex: 1; background: var(--negro); color: var(--gris);
+      border: 1px solid rgba(255,255,255,.14); border-radius: 8px;
+      padding: 10px; font-family: var(--fuente-cuerpo); font-weight: 800;
+      font-size: .82rem; letter-spacing: .06em; text-transform: uppercase; cursor: pointer;
+    }
+    .tabs-auth button.activa { background: var(--rojo); color: var(--blanco); border-color: var(--rojo); }
+    .form-auth .btn { width: 100%; margin-top: 6px; }
+    .nota-auth { margin-top: 14px; font-size: .78rem; color: var(--gris); text-align: center; }
+
+    /* ---------- Navegación del portal ---------- */
+    .tabs-portal {
+      display: flex; gap: 8px; margin: 26px 0 22px;
+      overflow-x: auto; padding-bottom: 4px;
+    }
+    .tabs-portal button {
+      flex: none;
+      background: var(--grafito); color: var(--gris);
+      border: 1px solid rgba(255,255,255,.12); border-radius: 100px;
+      padding: 10px 20px; font-family: var(--fuente-cuerpo); font-weight: 800;
+      font-size: .84rem; letter-spacing: .04em; cursor: pointer;
+      transition: background .2s, color .2s;
+    }
+    .tabs-portal button.activa { background: var(--rojo); color: var(--blanco); border-color: var(--rojo); }
+
+    .vista { display: none; }
+    .vista.activa { display: block; }
+
+    .encabezado-vista { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
+    .encabezado-vista h2 { font-size: 1.5rem; }
+    .encabezado-vista h2 em { color: var(--rojo); font-style: normal; }
+
+    /* ---------- Avisos ---------- */
+    .lista-avisos { display: grid; gap: 14px; }
+    .aviso {
+      background: var(--grafito); border: 1px solid rgba(255,255,255,.1);
+      border-left: 4px solid var(--rojo); border-radius: 12px; padding: 18px 20px;
+    }
+    .aviso.tipo-cancelacion { border-left-color: #f39c12; }
+    .aviso.tipo-envivo { border-left-color: var(--verde); }
+    .aviso-cima { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+    .aviso-cima h3 { font-size: 1.05rem; font-family: var(--fuente-cuerpo); font-weight: 800; text-transform: none; letter-spacing: 0; }
+    .etiqueta-aviso {
+      font-size: .66rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
+      padding: 3px 10px; border-radius: 100px;
+      background: rgba(228,0,43,.16); color: #ff90a4; border: 1px solid rgba(228,0,43,.45);
+    }
+    .aviso.tipo-cancelacion .etiqueta-aviso { background: rgba(243,156,18,.14); color: #ffd28a; border-color: rgba(243,156,18,.5); }
+    .aviso.tipo-envivo .etiqueta-aviso { background: rgba(46,204,113,.14); color: #7fe3ab; border-color: rgba(46,204,113,.5); }
+    .aviso p { color: var(--gris); font-size: .93rem; white-space: pre-line; }
+    .aviso .meta { margin-top: 10px; font-size: .74rem; color: rgba(185,185,191,.7); display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .aviso a.enlace-vivo { color: #7fe3ab; font-weight: 700; word-break: break-all; }
+
+    /* ---------- Entrenamientos ---------- */
+    .lista-entrenos { display: grid; gap: 14px; }
+    .entreno {
+      background: var(--grafito); border: 1px solid rgba(255,255,255,.1);
+      border-radius: 12px; padding: 18px 20px;
+      display: grid; grid-template-columns: 74px 1fr; gap: 16px;
+    }
+    .entreno-fecha {
+      text-align: center; background: var(--negro); border: 1px solid rgba(228,0,43,.4);
+      border-radius: 10px; padding: 8px 4px; align-self: start;
+    }
+    .entreno-fecha .dia { font-family: var(--fuente-display); font-size: 1.5rem; color: var(--rojo); line-height: 1.05; }
+    .entreno-fecha .mes { font-size: .64rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--gris); }
+    .entreno-info h3 { font-size: 1rem; font-family: var(--fuente-cuerpo); font-weight: 800; text-transform: none; letter-spacing: 0; }
+    .entreno-info .detalle { color: var(--gris); font-size: .87rem; margin-top: 2px; }
+    .entreno-asistencia { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .quien-va { margin-top: 10px; font-size: .82rem; color: var(--gris); }
+    .quien-va strong { color: var(--blanco); }
+    .fichas { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+    .ficha {
+      background: rgba(46,204,113,.12); border: 1px solid rgba(46,204,113,.4);
+      color: #a5ecc6; font-size: .76rem; font-weight: 700;
+      padding: 3px 11px; border-radius: 100px;
+    }
+    .estado-mio { font-size: .78rem; font-weight: 800; }
+    .estado-mio.va { color: #7fe3ab; }
+    .estado-mio.no-va { color: #ff90a4; }
+
+    /* ---------- Formularios de admin ---------- */
+    .caja-admin {
+      background: linear-gradient(115deg, rgba(228,0,43,.12), rgba(228,0,43,.03) 60%), var(--grafito);
+      border: 1px dashed rgba(228,0,43,.5);
+      border-radius: var(--radio); padding: 20px; margin-bottom: 20px;
+    }
+    .caja-admin h3 { font-size: 1rem; margin-bottom: 12px; color: #ff90a4; font-family: var(--fuente-cuerpo); font-weight: 800; text-transform: none; }
+    .fila { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 620px) { .fila { grid-template-columns: 1fr; } }
+
+    /* ---------- Perfil ---------- */
+    .perfil-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 700px) { .perfil-grid { grid-template-columns: 1fr; } }
+    .insignia-admin {
+      display: inline-block; background: var(--rojo); color: var(--blanco);
+      font-size: .68rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+      padding: 3px 12px; border-radius: 100px; margin-left: 8px; vertical-align: middle;
+    }
+    .proximamente {
+      border: 1px dashed rgba(255,255,255,.2); border-radius: var(--radio);
+      padding: 22px; text-align: center; color: var(--gris); font-size: .9rem;
+    }
+
+    .vacio { text-align: center; color: var(--gris); padding: 30px 10px; font-size: .92rem; }
+    .oculto { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <div class="cinta-demo" id="cinta-demo">
+    🧪 <strong>MODO DEMO:</strong> los datos se guardan solo en este navegador, para probar. Cuando conectemos la base de datos real, las cuentas serán para todo el equipo.
+  </div>
+
+  <header class="barra">
+    <div class="barra-inner">
+      <a class="barra-marca" href="index.html">
+        <img src="assets/logo-icono.png" alt="Jaguares NZ">
+        <span>PORTAL <em>JAGUARES</em></span>
+      </a>
+      <div class="barra-acciones" id="barra-sesion" style="display:none;">
+        <span class="hola">Hola, <strong id="hola-nombre"></strong></span>
+        <button class="btn btn-borde btn-mini" id="btn-salir">Salir</button>
+      </div>
+      <div class="barra-acciones" id="barra-visita">
+        <a class="btn btn-borde btn-mini" href="index.html">← Volver al sitio</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= VISTA: LOGIN / REGISTRO ================= -->
+  <section id="pantalla-auth">
+    <div class="contenedor">
+      <div class="panel-auth">
+        <img class="logo-centro" src="assets/logo-jaguares.png" alt="Academia Jaguares NZ">
+        <h1>Portal <em>Jaguares</em></h1>
+        <p class="sub">Avisos, entrenamientos y asistencia — solo para la familia Jaguares.</p>
+        <div class="caja">
+          <div class="tabs-auth">
+            <button id="tab-entrar" class="activa" type="button">Iniciar sesión</button>
+            <button id="tab-registro" type="button">Crear mi cuenta</button>
+          </div>
+          <div class="error" id="error-auth"></div>
+
+          <form class="form-auth" id="form-entrar">
+            <div class="campo">
+              <label for="entrar-correo">Correo</label>
+              <input type="email" id="entrar-correo" required autocomplete="email" placeholder="tucorreo@ejemplo.com">
+            </div>
+            <div class="campo">
+              <label for="entrar-clave">Contraseña</label>
+              <input type="password" id="entrar-clave" required autocomplete="current-password" placeholder="••••••••">
+            </div>
+            <button class="btn btn-rojo" type="submit">Entrar</button>
+          </form>
+
+          <form class="form-auth oculto" id="form-registro">
+            <div class="campo">
+              <label for="reg-nombre">Nombre completo</label>
+              <input type="text" id="reg-nombre" required placeholder="Ej. Valentina Pérez">
+            </div>
+            <div class="fila">
+              <div class="campo">
+                <label for="reg-edad">Edad</label>
+                <input type="number" id="reg-edad" required min="5" max="99" placeholder="Ej. 14">
+              </div>
+              <div class="campo">
+                <label for="reg-categoria">Categoría</label>
+                <select id="reg-categoria" required>
+                  <option value="" disabled selected>Elige</option>
+                  <option>Menores (6–11)</option>
+                  <option>Mayores (12–17) — iniciación e intermedio</option>
+                  <option>Mayores (12–17) — avanzado</option>
+                  <option>Entrenador / Staff</option>
+                  <option>Mamá / Papá</option>
+                </select>
+              </div>
+            </div>
+            <div class="campo">
+              <label for="reg-correo">Correo</label>
+              <input type="email" id="reg-correo" required autocomplete="email" placeholder="tucorreo@ejemplo.com">
+            </div>
+            <div class="campo">
+              <label for="reg-clave">Contraseña (mínimo 6 caracteres)</label>
+              <input type="password" id="reg-clave" required minlength="6" autocomplete="new-password" placeholder="••••••••">
+            </div>
+            <button class="btn btn-rojo" type="submit">Crear cuenta</button>
+          </form>
+
+          <p class="nota-auth" id="nota-demo">Para probar como <strong>administrador</strong> (lo que verán Rocío y Néstor):<br>correo <strong>admin@jaguares.mx</strong> · contraseña <strong>jaguares123</strong></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= VISTA: PORTAL ================= -->
+  <section id="pantalla-portal" class="oculto">
+    <div class="contenedor">
+      <div class="tabs-portal">
+        <button data-vista="avisos" class="activa" type="button">📣 Avisos</button>
+        <button data-vista="entrenos" type="button">📅 Entrenamientos</button>
+        <button data-vista="perfil" type="button">👤 Mi perfil</button>
+      </div>
+
+      <!-- ---- Avisos ---- -->
+      <div class="vista activa" id="vista-avisos">
+        <div class="encabezado-vista">
+          <h2>Avisos y <em>noticias</em></h2>
+        </div>
+        <div class="caja-admin oculto" id="admin-aviso">
+          <h3>🛡️ Publicar aviso (solo administradores)</h3>
+          <div class="fila">
+            <div class="campo">
+              <label for="aviso-titulo">Título</label>
+              <input type="text" id="aviso-titulo" placeholder="Ej. Se cancela el entrenamiento de hoy">
+            </div>
+            <div class="campo">
+              <label for="aviso-tipo">Tipo</label>
+              <select id="aviso-tipo">
+                <option value="aviso">Aviso</option>
+                <option value="noticia">Noticia</option>
+                <option value="cancelacion">Cancelación</option>
+                <option value="torneo">Torneo</option>
+                <option value="envivo">Partido en vivo</option>
+              </select>
+            </div>
+          </div>
+          <div class="campo">
+            <label for="aviso-texto">Mensaje</label>
+            <textarea id="aviso-texto" placeholder="Escribe el aviso para el equipo..."></textarea>
+          </div>
+          <div class="campo oculto" id="campo-enlace">
+            <label for="aviso-enlace">Link de la transmisión</label>
+            <input type="url" id="aviso-enlace" placeholder="https://... (YouTube, Facebook Live, etc.)">
+          </div>
+          <button class="btn btn-rojo btn-mini" id="btn-publicar-aviso" type="button">Publicar</button>
+        </div>
+        <div class="lista-avisos" id="lista-avisos"></div>
+      </div>
+
+      <!-- ---- Entrenamientos ---- -->
+      <div class="vista" id="vista-entrenos">
+        <div class="encabezado-vista">
+          <h2>Próximos <em>entrenamientos</em></h2>
+        </div>
+        <div class="caja-admin oculto" id="admin-entreno">
+          <h3>🛡️ Crear entrenamiento (solo administradores)</h3>
+          <div class="fila">
+            <div class="campo">
+              <label for="entreno-fecha">Fecha</label>
+              <input type="date" id="entreno-fecha">
+            </div>
+            <div class="campo">
+              <label for="entreno-hora">Horario</label>
+              <input type="text" id="entreno-hora" placeholder="Ej. 5:00 – 7:00 pm">
+            </div>
+          </div>
+          <div class="fila">
+            <div class="campo">
+              <label for="entreno-categoria">Para</label>
+              <select id="entreno-categoria">
+                <option>Todos</option>
+                <option>Menores (6–11)</option>
+                <option>Mayores (12–17) — iniciación e intermedio</option>
+                <option>Mayores (12–17) — avanzado</option>
+              </select>
+            </div>
+            <div class="campo">
+              <label for="entreno-lugar">Lugar</label>
+              <input type="text" id="entreno-lugar" value="Gimnasio Jaguares">
+            </div>
+          </div>
+          <div class="campo">
+            <label for="entreno-nota">Nota (opcional)</label>
+            <input type="text" id="entreno-nota" placeholder="Ej. Traer playera blanca">
+          </div>
+          <button class="btn btn-rojo btn-mini" id="btn-crear-entreno" type="button">Crear</button>
+        </div>
+        <div class="lista-entrenos" id="lista-entrenos"></div>
+      </div>
+
+      <!-- ---- Perfil ---- -->
+      <div class="vista" id="vista-perfil">
+        <div class="encabezado-vista">
+          <h2>Mi <em>perfil</em></h2>
+        </div>
+        <div class="perfil-grid">
+          <div class="caja">
+            <div class="error" id="error-perfil"></div>
+            <div class="campo">
+              <label for="perfil-nombre">Nombre</label>
+              <input type="text" id="perfil-nombre">
+            </div>
+            <div class="fila">
+              <div class="campo">
+                <label for="perfil-edad">Edad</label>
+                <input type="number" id="perfil-edad" min="5" max="99">
+              </div>
+              <div class="campo">
+                <label for="perfil-categoria">Categoría</label>
+                <select id="perfil-categoria">
+                  <option>Menores (6–11)</option>
+                  <option>Mayores (12–17) — iniciación e intermedio</option>
+                  <option>Mayores (12–17) — avanzado</option>
+                  <option>Entrenador / Staff</option>
+                  <option>Mamá / Papá</option>
+                </select>
+              </div>
+            </div>
+            <p style="color:var(--gris); font-size:.82rem; margin-bottom:12px;" id="perfil-correo"></p>
+            <button class="btn btn-rojo btn-mini" id="btn-guardar-perfil" type="button">Guardar cambios</button>
+            <span id="perfil-guardado" style="color:#7fe3ab; font-size:.8rem; font-weight:700; margin-left:10px; display:none;">✓ Guardado</span>
+          </div>
+          <div class="caja">
+            <h3 style="font-size:1rem; font-family:var(--fuente-cuerpo); font-weight:800; text-transform:none; margin-bottom:12px;">🏆 Mi historial deportivo</h3>
+            <div class="proximamente">
+              Aquí aparecerán tus <strong>torneos jugados</strong>, tus <strong>certificados digitales</strong> (participación, MVP, quinteto ideal) y tu <strong>CV deportivo</strong> descargable.<br><br>
+              📌 Llega en la Fase 2 del portal.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+  'use strict';
+  /* ==========================================================================
+     PORTAL JAGUARES — Fase 1 (avisos, entrenamientos, asistencia, perfil)
+
+     CONFIGURACIÓN: cuando la academia tenga su proyecto de Firebase, se
+     llenará FIREBASE_CONFIG y el portal usará la base de datos real para
+     todo el equipo. Mientras FIREBASE_CONFIG sea null, funciona en MODO
+     DEMO guardando los datos en el navegador (localStorage).
+     ========================================================================== */
+  const FIREBASE_CONFIG = null; // ← aquí van las llaves del proyecto de la academia
+  const CORREOS_ADMIN = [
+    'admin@jaguares.mx',        // cuenta admin del modo demo
+    // 'correo-de-rocio@...',   // ← se agregan al conectar Firebase
+    // 'correo-de-nestor@...',
+  ];
+
+  /* ---------------- Almacén de datos (MODO DEMO: localStorage) --------------- */
+  const LLAVE = 'jaguares_portal_demo_v1';
+
+  function cargar() {
+    try { return JSON.parse(localStorage.getItem(LLAVE)) || null; } catch { return null; }
+  }
+  function guardar(d) { localStorage.setItem(LLAVE, JSON.stringify(d)); }
+
+  function semilla() {
+    const hoy = new Date();
+    const enDias = n => {
+      const f = new Date(hoy); f.setDate(f.getDate() + n);
+      return f.toISOString().slice(0, 10);
+    };
+    return {
+      usuarios: {
+        'admin@jaguares.mx': { nombre: 'Rocío (demo admin)', edad: 0, categoria: 'Entrenador / Staff', clave: 'jaguares123' },
+      },
+      sesion: null,
+      avisos: [
+        { id: 'a1', tipo: 'noticia', titulo: '¡Bienvenidos al Portal Jaguares! 🐾', texto: 'Este es el nuevo portal del equipo: aquí verás los avisos de la academia, los entrenamientos que te tocan y podrás confirmar tu asistencia.\n\nCualquier duda, con tu coach.', enlace: '', autor: 'Academia Jaguares NZ', fecha: Date.now() - 86400000 },
+        { id: 'a2', tipo: 'torneo', titulo: 'Garra Jaguar Cup 2026 — 27 al 29 de noviembre', texto: 'Nuestra copa se acerca. Pronto publicaremos las convocatorias por categoría. ¡Vayan preparando la garra! 🐆', enlace: '', autor: 'Academia Jaguares NZ', fecha: Date.now() - 3600000 },
+      ],
+      entrenos: [
+        { id: 'e1', fecha: enDias(1), hora: '5:00 – 7:00 pm', categoria: 'Menores (6–11)', lugar: 'Gimnasio Jaguares', nota: '', asistencias: {} },
+        { id: 'e2', fecha: enDias(1), hora: '6:30 – 8:30 pm', categoria: 'Mayores (12–17) — iniciación e intermedio', lugar: 'Gimnasio Jaguares', nota: '', asistencias: {} },
+        { id: 'e3', fecha: enDias(3), hora: '8:00 – 10:00 am', categoria: 'Todos', lugar: 'Gimnasio Jaguares', nota: 'Sábado: llegar 15 min antes', asistencias: {} },
+      ],
+    };
+  }
+
+  let BD = cargar() || semilla();
+  guardar(BD);
+
+  const esAdmin = correo => CORREOS_ADMIN.includes((correo || '').toLowerCase());
+  const usuarioActual = () => BD.sesion ? { correo: BD.sesion, ...BD.usuarios[BD.sesion] } : null;
+
+  /* ---------------- Utilidades ---------------- */
+  const $ = sel => document.querySelector(sel);
+  const MESES = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
+  const escapar = t => String(t ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  function fechaBonita(ms) {
+    const f = new Date(ms);
+    return f.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
+  }
+
+  function mostrarError(sel, msj) {
+    const el = $(sel);
+    el.textContent = msj;
+    el.classList.add('visible');
+    setTimeout(() => el.classList.remove('visible'), 5000);
+  }
+
+  /* ---------------- Autenticación ---------------- */
+  function registrar(nombre, edad, categoria, correo, clave) {
+    correo = correo.trim().toLowerCase();
+    if (BD.usuarios[correo]) throw new Error('Ya existe una cuenta con ese correo. Prueba iniciar sesión.');
+    BD.usuarios[correo] = { nombre: nombre.trim(), edad: Number(edad), categoria, clave };
+    BD.sesion = correo;
+    guardar(BD);
+  }
+
+  function entrar(correo, clave) {
+    correo = correo.trim().toLowerCase();
+    const u = BD.usuarios[correo];
+    if (!u || u.clave !== clave) throw new Error('Correo o contraseña incorrectos.');
+    BD.sesion = correo;
+    guardar(BD);
+  }
+
+  function salir() {
+    BD.sesion = null;
+    guardar(BD);
+    // al salir, regresar a la pestaña de "Iniciar sesión"
+    $('#tab-entrar').classList.add('activa');
+    $('#tab-registro').classList.remove('activa');
+    $('#form-entrar').classList.remove('oculto');
+    $('#form-registro').classList.add('oculto');
+    render();
+  }
+
+  /* ---------------- Render general ---------------- */
+  function render() {
+    const u = usuarioActual();
+    $('#pantalla-auth').classList.toggle('oculto', !!u);
+    $('#pantalla-portal').classList.toggle('oculto', !u);
+    $('#barra-sesion').style.display = u ? 'flex' : 'none';
+    $('#barra-visita').style.display = u ? 'none' : 'flex';
+    if (u) {
+      $('#hola-nombre').textContent = u.nombre.split(' ')[0] + (esAdmin(u.correo) ? ' 🛡️' : '');
+      $('#admin-aviso').classList.toggle('oculto', !esAdmin(u.correo));
+      $('#admin-entreno').classList.toggle('oculto', !esAdmin(u.correo));
+      renderAvisos();
+      renderEntrenos();
+      renderPerfil();
+    }
+  }
+
+  /* ---------------- Avisos ---------------- */
+  const NOMBRE_TIPO = { aviso: 'Aviso', noticia: 'Noticia', cancelacion: 'Cancelación', torneo: 'Torneo', envivo: 'En vivo 🔴' };
+
+  function renderAvisos() {
+    const u = usuarioActual();
+    const cont = $('#lista-avisos');
+    const avisos = [...BD.avisos].sort((a, b) => b.fecha - a.fecha);
+    if (!avisos.length) { cont.innerHTML = '<div class="vacio">Aún no hay avisos publicados.</div>'; return; }
+    cont.innerHTML = avisos.map(a => `
+      <article class="aviso tipo-${escapar(a.tipo)}">
+        <div class="aviso-cima">
+          <span class="etiqueta-aviso">${NOMBRE_TIPO[a.tipo] || 'Aviso'}</span>
+          <h3>${escapar(a.titulo)}</h3>
+        </div>
+        <p>${escapar(a.texto)}</p>
+        ${a.enlace ? `<p style="margin-top:8px;"><a class="enlace-vivo" href="${escapar(a.enlace)}" target="_blank" rel="noopener">▶ Ver transmisión</a></p>` : ''}
+        <div class="meta">
+          <span>${escapar(a.autor)} · ${fechaBonita(a.fecha)}</span>
+          ${esAdmin(u.correo) ? `<button class="btn btn-peligro btn-mini" data-borrar-aviso="${escapar(a.id)}">Borrar</button>` : ''}
+        </div>
+      </article>`).join('');
+    cont.querySelectorAll('[data-borrar-aviso]').forEach(b => b.addEventListener('click', () => {
+      if (!confirm('¿Borrar este aviso?')) return;
+      BD.avisos = BD.avisos.filter(x => x.id !== b.dataset.borrarAviso);
+      guardar(BD); renderAvisos();
+    }));
+  }
+
+  $('#aviso-tipo').addEventListener('change', e => {
+    $('#campo-enlace').classList.toggle('oculto', e.target.value !== 'envivo');
+  });
+
+  $('#btn-publicar-aviso').addEventListener('click', () => {
+    const titulo = $('#aviso-titulo').value.trim();
+    const texto = $('#aviso-texto').value.trim();
+    if (!titulo || !texto) { alert('Escribe el título y el mensaje.'); return; }
+    BD.avisos.push({
+      id: 'a' + Date.now(),
+      tipo: $('#aviso-tipo').value,
+      titulo, texto,
+      enlace: $('#aviso-tipo').value === 'envivo' ? $('#aviso-enlace').value.trim() : '',
+      autor: usuarioActual().nombre,
+      fecha: Date.now(),
+    });
+    guardar(BD);
+    $('#aviso-titulo').value = ''; $('#aviso-texto').value = ''; $('#aviso-enlace').value = '';
+    renderAvisos();
+  });
+
+  /* ---------------- Entrenamientos ---------------- */
+  function renderEntrenos() {
+    const u = usuarioActual();
+    const cont = $('#lista-entrenos');
+    const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+    const proximos = BD.entrenos
+      .filter(e => new Date(e.fecha + 'T23:59') >= hoy)
+      .sort((a, b) => a.fecha.localeCompare(b.fecha));
+    if (!proximos.length) { cont.innerHTML = '<div class="vacio">No hay entrenamientos programados por ahora.</div>'; return; }
+    cont.innerHTML = proximos.map(e => {
+      const f = new Date(e.fecha + 'T12:00');
+      const lista = Object.values(e.asistencias).filter(x => x.va);
+      const mio = e.asistencias[u.correo];
+      return `
+      <article class="entreno">
+        <div class="entreno-fecha">
+          <div class="dia">${f.getDate()}</div>
+          <div class="mes">${MESES[f.getMonth()]}</div>
+        </div>
+        <div class="entreno-info">
+          <h3>${escapar(e.hora)} · ${escapar(e.categoria)}</h3>
+          <div class="detalle">📍 ${escapar(e.lugar)}${e.nota ? ' · 📝 ' + escapar(e.nota) : ''}</div>
+          <div class="entreno-asistencia">
+            <button class="btn btn-mini ${mio?.va ? 'btn-verde' : 'btn-gris'}" data-asistir="${escapar(e.id)}">✔ Sí voy</button>
+            <button class="btn btn-mini ${mio && !mio.va ? 'btn-peligro' : 'btn-gris'}" data-faltar="${escapar(e.id)}">✘ No puedo</button>
+            ${mio ? `<span class="estado-mio ${mio.va ? 'va' : 'no-va'}">${mio.va ? 'Confirmaste que SÍ vas' : 'Avisaste que no puedes'}</span>` : ''}
+            ${esAdmin(u.correo) ? `<button class="btn btn-peligro btn-mini" data-borrar-entreno="${escapar(e.id)}">Borrar</button>` : ''}
+          </div>
+          <div class="quien-va">
+            <strong>${lista.length}</strong> confirmado${lista.length === 1 ? '' : 's'}:
+            ${lista.length ? `<div class="fichas">${lista.map(x => `<span class="ficha">${escapar(x.nombre)}</span>`).join('')}</div>` : ' aún nadie confirma — ¡sé el primero! 🏀'}
+          </div>
+        </div>
+      </article>`;
+    }).join('');
+
+    cont.querySelectorAll('[data-asistir]').forEach(b => b.addEventListener('click', () => marcar(b.dataset.asistir, true)));
+    cont.querySelectorAll('[data-faltar]').forEach(b => b.addEventListener('click', () => marcar(b.dataset.faltar, false)));
+    cont.querySelectorAll('[data-borrar-entreno]').forEach(b => b.addEventListener('click', () => {
+      if (!confirm('¿Borrar este entrenamiento?')) return;
+      BD.entrenos = BD.entrenos.filter(x => x.id !== b.dataset.borrarEntreno);
+      guardar(BD); renderEntrenos();
+    }));
+  }
+
+  function marcar(id, va) {
+    const u = usuarioActual();
+    const e = BD.entrenos.find(x => x.id === id);
+    if (!e) return;
+    e.asistencias[u.correo] = { nombre: u.nombre, va };
+    guardar(BD); renderEntrenos();
+  }
+
+  $('#btn-crear-entreno').addEventListener('click', () => {
+    const fecha = $('#entreno-fecha').value;
+    const hora = $('#entreno-hora').value.trim();
+    if (!fecha || !hora) { alert('Pon la fecha y el horario.'); return; }
+    BD.entrenos.push({
+      id: 'e' + Date.now(),
+      fecha, hora,
+      categoria: $('#entreno-categoria').value,
+      lugar: $('#entreno-lugar').value.trim() || 'Gimnasio Jaguares',
+      nota: $('#entreno-nota').value.trim(),
+      asistencias: {},
+    });
+    guardar(BD);
+    $('#entreno-fecha').value = ''; $('#entreno-hora').value = ''; $('#entreno-nota').value = '';
+    renderEntrenos();
+  });
+
+  /* ---------------- Perfil ---------------- */
+  function renderPerfil() {
+    const u = usuarioActual();
+    $('#perfil-nombre').value = u.nombre;
+    $('#perfil-edad').value = u.edad || '';
+    $('#perfil-categoria').value = u.categoria;
+    $('#perfil-correo').innerHTML = `Correo: <strong>${escapar(u.correo)}</strong>` + (esAdmin(u.correo) ? '<span class="insignia-admin">Admin</span>' : '');
+  }
+
+  $('#btn-guardar-perfil').addEventListener('click', () => {
+    const u = usuarioActual();
+    const nombre = $('#perfil-nombre').value.trim();
+    if (!nombre) { mostrarError('#error-perfil', 'El nombre no puede quedar vacío.'); return; }
+    BD.usuarios[u.correo].nombre = nombre;
+    BD.usuarios[u.correo].edad = Number($('#perfil-edad').value) || 0;
+    BD.usuarios[u.correo].categoria = $('#perfil-categoria').value;
+    guardar(BD);
+    const ok = $('#perfil-guardado');
+    ok.style.display = 'inline';
+    setTimeout(() => ok.style.display = 'none', 2500);
+    render();
+  });
+
+  /* ---------------- Tabs ---------------- */
+  $('#tab-entrar').addEventListener('click', () => {
+    $('#tab-entrar').classList.add('activa'); $('#tab-registro').classList.remove('activa');
+    $('#form-entrar').classList.remove('oculto'); $('#form-registro').classList.add('oculto');
+  });
+  $('#tab-registro').addEventListener('click', () => {
+    $('#tab-registro').classList.add('activa'); $('#tab-entrar').classList.remove('activa');
+    $('#form-registro').classList.remove('oculto'); $('#form-entrar').classList.add('oculto');
+  });
+
+  function irAVista(nombre) {
+    document.querySelectorAll('.tabs-portal button').forEach(x => x.classList.toggle('activa', x.dataset.vista === nombre));
+    document.querySelectorAll('.vista').forEach(x => x.classList.toggle('activa', x.id === 'vista-' + nombre));
+  }
+  document.querySelectorAll('.tabs-portal button').forEach(b => b.addEventListener('click', () => irAVista(b.dataset.vista)));
+
+  /* ---------------- Formularios de acceso ---------------- */
+  $('#form-entrar').addEventListener('submit', e => {
+    e.preventDefault();
+    try {
+      entrar($('#entrar-correo').value, $('#entrar-clave').value);
+      irAVista('avisos');
+      render();
+    } catch (err) { mostrarError('#error-auth', err.message); }
+  });
+
+  $('#form-registro').addEventListener('submit', e => {
+    e.preventDefault();
+    try {
+      registrar($('#reg-nombre').value, $('#reg-edad').value, $('#reg-categoria').value, $('#reg-correo').value, $('#reg-clave').value);
+      irAVista('avisos');
+      render();
+    } catch (err) { mostrarError('#error-auth', err.message); }
+  });
+
+  $('#btn-salir').addEventListener('click', salir);
+
+  render();
+  </script>
+</body>
+</html>
