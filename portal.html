@@ -123,6 +123,25 @@
     }
     .error.visible { display: block; }
 
+    /* ---------- Selector de bloques ---------- */
+    .grupo-bloques { display: grid; gap: 8px; }
+    .check-bloque {
+      display: flex; align-items: flex-start; gap: 10px;
+      background: var(--negro); border: 1px solid rgba(255,255,255,.16);
+      border-radius: 10px; padding: 11px 13px; cursor: pointer;
+      transition: border-color .2s, background .2s;
+    }
+    .check-bloque:has(input:checked) { border-color: var(--rojo); background: rgba(228,0,43,.1); }
+    .check-bloque input { margin-top: 4px; accent-color: var(--rojo); width: 16px; height: 16px; flex: none; }
+    .check-bloque .tit { font-weight: 800; font-size: .9rem; }
+    .check-bloque .hor { display: block; color: var(--gris); font-size: .78rem; font-weight: 600; }
+    .etiqueta-bloque {
+      display: inline-block; font-size: .66rem; font-weight: 800; letter-spacing: .1em;
+      text-transform: uppercase; padding: 2px 10px; border-radius: 100px;
+      background: rgba(228,0,43,.16); color: #ff90a4; border: 1px solid rgba(228,0,43,.45);
+      vertical-align: middle;
+    }
+
     /* ---------- Login ---------- */
     .panel-auth { max-width: 440px; margin: 30px auto 0; }
     .panel-auth .logo-centro { display: block; width: 190px; margin: 0 auto 18px; }
@@ -291,21 +310,16 @@
               <label for="reg-nombre">Nombre completo</label>
               <input type="text" id="reg-nombre" required placeholder="Ej. Valentina Pérez">
             </div>
-            <div class="fila">
-              <div class="campo">
-                <label for="reg-edad">Edad</label>
-                <input type="number" id="reg-edad" required min="5" max="99" placeholder="Ej. 14">
-              </div>
-              <div class="campo">
-                <label for="reg-categoria">Categoría</label>
-                <select id="reg-categoria" required>
-                  <option value="" disabled selected>Elige</option>
-                  <option>Menores (6–11)</option>
-                  <option>Mayores (12–17) — iniciación e intermedio</option>
-                  <option>Mayores (12–17) — avanzado</option>
-                  <option>Entrenador / Staff</option>
-                  <option>Mamá / Papá</option>
-                </select>
+            <div class="campo">
+              <label for="reg-edad">Edad</label>
+              <input type="number" id="reg-edad" required min="5" max="99" placeholder="Ej. 14">
+            </div>
+            <div class="campo">
+              <label>¿A qué bloque(s) vas? — puedes elegir varios</label>
+              <div class="grupo-bloques" id="reg-bloques">
+                <label class="check-bloque"><input type="checkbox" value="B1"><span><span class="tit">Bloque 1 · Menores (6–11)</span><span class="hor">Mar y Jue 5:00–7:00 pm · Sáb 10:00 am–12:00 pm</span></span></label>
+                <label class="check-bloque"><input type="checkbox" value="B2"><span><span class="tit">Bloque 2 · Mayores (12–17)</span><span class="hor">Mar y Jue 6:30–8:30 pm · Sáb 8:00–10:00 am</span></span></label>
+                <label class="check-bloque"><input type="checkbox" value="B3"><span><span class="tit">Bloque 3 · Clases particulares</span><span class="hor">Lun y Vie 5:00–7:00 pm</span></span></label>
               </div>
             </div>
             <div class="campo">
@@ -389,12 +403,12 @@
           </div>
           <div class="fila">
             <div class="campo">
-              <label for="entreno-categoria">Para</label>
-              <select id="entreno-categoria">
-                <option>Todos</option>
-                <option>Menores (6–11)</option>
-                <option>Mayores (12–17) — iniciación e intermedio</option>
-                <option>Mayores (12–17) — avanzado</option>
+              <label for="entreno-bloque">Para</label>
+              <select id="entreno-bloque">
+                <option value="todos">Todos los bloques</option>
+                <option value="B1">Bloque 1 · Menores (6–11)</option>
+                <option value="B2">Bloque 2 · Mayores (12–17)</option>
+                <option value="B3">Bloque 3 · Clases particulares</option>
               </select>
             </div>
             <div class="campo">
@@ -423,20 +437,16 @@
               <label for="perfil-nombre">Nombre</label>
               <input type="text" id="perfil-nombre">
             </div>
-            <div class="fila">
-              <div class="campo">
-                <label for="perfil-edad">Edad</label>
-                <input type="number" id="perfil-edad" min="5" max="99">
-              </div>
-              <div class="campo">
-                <label for="perfil-categoria">Categoría</label>
-                <select id="perfil-categoria">
-                  <option>Menores (6–11)</option>
-                  <option>Mayores (12–17) — iniciación e intermedio</option>
-                  <option>Mayores (12–17) — avanzado</option>
-                  <option>Entrenador / Staff</option>
-                  <option>Mamá / Papá</option>
-                </select>
+            <div class="campo">
+              <label for="perfil-edad">Edad</label>
+              <input type="number" id="perfil-edad" min="5" max="99">
+            </div>
+            <div class="campo">
+              <label>Mis bloques — solo verás los entrenamientos de los que marques</label>
+              <div class="grupo-bloques" id="perfil-bloques">
+                <label class="check-bloque"><input type="checkbox" value="B1"><span><span class="tit">Bloque 1 · Menores (6–11)</span><span class="hor">Mar y Jue 5:00–7:00 pm · Sáb 10:00 am–12:00 pm</span></span></label>
+                <label class="check-bloque"><input type="checkbox" value="B2"><span><span class="tit">Bloque 2 · Mayores (12–17)</span><span class="hor">Mar y Jue 6:30–8:30 pm · Sáb 8:00–10:00 am</span></span></label>
+                <label class="check-bloque"><input type="checkbox" value="B3"><span><span class="tit">Bloque 3 · Clases particulares</span><span class="hor">Lun y Vie 5:00–7:00 pm</span></span></label>
               </div>
             </div>
             <p style="color:var(--gris); font-size:.82rem; margin-bottom:12px;" id="perfil-correo"></p>
@@ -481,30 +491,80 @@
   function guardar(d) { localStorage.setItem(LLAVE, JSON.stringify(d)); }
 
   function semilla() {
-    const hoy = new Date();
-    const enDias = n => {
-      const f = new Date(hoy); f.setDate(f.getDate() + n);
-      return f.toISOString().slice(0, 10);
-    };
     return {
       usuarios: {
-        'admin@jaguares.mx': { nombre: 'Rocío (demo admin)', edad: 0, categoria: 'Entrenador / Staff', clave: 'jaguares123' },
+        'admin@jaguares.mx': { nombre: 'Rocío (demo admin)', edad: 0, bloques: [], clave: 'jaguares123' },
       },
       sesion: null,
       avisos: [
-        { id: 'a1', tipo: 'noticia', titulo: '¡Bienvenidos al Portal Jaguares! 🐾', texto: 'Este es el nuevo portal del equipo: aquí verás los avisos de la academia, los entrenamientos que te tocan y podrás confirmar tu asistencia.\n\nCualquier duda, con tu coach.', enlace: '', autor: 'Academia Jaguares NZ', fecha: Date.now() - 86400000 },
+        { id: 'a1', tipo: 'noticia', titulo: '¡Bienvenidos al Portal Jaguares! 🐾', texto: 'Este es el nuevo portal del equipo: aquí verás los avisos de la academia, los entrenamientos de tus bloques y podrás confirmar tu asistencia.\n\nCualquier duda, con tu coach.', enlace: '', autor: 'Academia Jaguares NZ', fecha: Date.now() - 86400000 },
         { id: 'a2', tipo: 'torneo', titulo: 'Garra Jaguar Cup 2026 — 27 al 29 de noviembre', texto: 'Nuestra copa se acerca. Pronto publicaremos las convocatorias por categoría. ¡Vayan preparando la garra! 🐆', enlace: '', autor: 'Academia Jaguares NZ', fecha: Date.now() - 3600000 },
       ],
-      entrenos: [
-        { id: 'e1', fecha: enDias(1), hora: '5:00 – 7:00 pm', categoria: 'Menores (6–11)', lugar: 'Gimnasio Jaguares', nota: '', asistencias: {} },
-        { id: 'e2', fecha: enDias(1), hora: '6:30 – 8:30 pm', categoria: 'Mayores (12–17) — iniciación e intermedio', lugar: 'Gimnasio Jaguares', nota: '', asistencias: {} },
-        { id: 'e3', fecha: enDias(3), hora: '8:00 – 10:00 am', categoria: 'Todos', lugar: 'Gimnasio Jaguares', nota: 'Sábado: llegar 15 min antes', asistencias: {} },
-      ],
+      entrenos: [],
+      borrados: [],
     };
   }
 
   let BD = cargar() || semilla();
+
+  /* --- Migración de datos guardados con el formato anterior --- */
+  (function migrar() {
+    BD.borrados = BD.borrados || [];
+    for (const correo in BD.usuarios) {
+      const u = BD.usuarios[correo];
+      if (!u.bloques) {
+        const c = u.categoria || '';
+        u.bloques = c.includes('Menores') ? ['B1'] : c.includes('Mayores') ? ['B2'] : [];
+        delete u.categoria;
+      }
+    }
+    // los entrenamientos de ejemplo viejos se sustituyen por el horario semanal
+    BD.entrenos = (BD.entrenos || []).filter(e => !['e1', 'e2', 'e3'].includes(e.id));
+    BD.entrenos.forEach(e => {
+      if (!e.bloque) {
+        const c = e.categoria || 'Todos';
+        e.bloque = c.includes('Menores') ? 'B1' : c.includes('Mayores') ? 'B2' : 'todos';
+        delete e.categoria;
+      }
+    });
+  })();
   guardar(BD);
+
+  /* ---------------- Horario semanal fijo (se genera solo) ----------------
+     Lun/Vie: Bloque 3 · Mar/Jue: Bloques 1 y 2 · Sáb: Bloques 2 y 1 */
+  const NOMBRE_BLOQUE = {
+    B1: 'Bloque 1 · Menores (6–11)',
+    B2: 'Bloque 2 · Mayores (12–17)',
+    B3: 'Bloque 3 · Clases particulares',
+    todos: 'Todos los bloques',
+  };
+  const PLANTILLA_SEMANA = [
+    { dia: 1, bloque: 'B3', hora: '5:00 – 7:00 pm' },
+    { dia: 2, bloque: 'B1', hora: '5:00 – 7:00 pm' },
+    { dia: 2, bloque: 'B2', hora: '6:30 – 8:30 pm' },
+    { dia: 4, bloque: 'B1', hora: '5:00 – 7:00 pm' },
+    { dia: 4, bloque: 'B2', hora: '6:30 – 8:30 pm' },
+    { dia: 5, bloque: 'B3', hora: '5:00 – 7:00 pm' },
+    { dia: 6, bloque: 'B2', hora: '8:00 – 10:00 am' },
+    { dia: 6, bloque: 'B1', hora: '10:00 am – 12:00 pm' },
+  ];
+
+  function generarSemana() {
+    const hoy = new Date();
+    let cambio = false;
+    for (let d = 0; d <= 7; d++) {
+      const f = new Date(hoy); f.setDate(f.getDate() + d);
+      const fecha = f.toISOString().slice(0, 10);
+      PLANTILLA_SEMANA.filter(p => p.dia === f.getDay()).forEach(p => {
+        const id = `auto-${p.bloque}-${fecha}`;
+        if (BD.borrados.includes(id)) return;
+        if (BD.entrenos.some(e => e.id === id)) return;
+        BD.entrenos.push({ id, fecha, hora: p.hora, bloque: p.bloque, lugar: 'Gimnasio Jaguares', nota: '', asistencias: {} });
+        cambio = true;
+      });
+    }
+    if (cambio) guardar(BD);
+  }
 
   const esAdmin = correo => CORREOS_ADMIN.includes((correo || '').toLowerCase());
   const usuarioActual = () => BD.sesion ? { correo: BD.sesion, ...BD.usuarios[BD.sesion] } : null;
@@ -527,10 +587,11 @@
   }
 
   /* ---------------- Autenticación ---------------- */
-  function registrar(nombre, edad, categoria, correo, clave) {
+  function registrar(nombre, edad, bloques, correo, clave) {
     correo = correo.trim().toLowerCase();
     if (BD.usuarios[correo]) throw new Error('Ya existe una cuenta con ese correo. Prueba iniciar sesión.');
-    BD.usuarios[correo] = { nombre: nombre.trim(), edad: Number(edad), categoria, clave };
+    if (!bloques.length) throw new Error('Marca al menos un bloque (puedes cambiarlo después en tu perfil).');
+    BD.usuarios[correo] = { nombre: nombre.trim(), edad: Number(edad), bloques, clave };
     BD.sesion = correo;
     guardar(BD);
   }
@@ -621,14 +682,29 @@
   });
 
   /* ---------------- Entrenamientos ---------------- */
+  function minutosDe(hora) {
+    // convierte "6:30 – 8:30 pm" / "10:00 am – 12:00 pm" a minutos para ordenar
+    const m = String(hora).match(/(\d{1,2}):(\d{2})/);
+    if (!m) return 0;
+    let h = Number(m[1]);
+    const antes = String(hora).slice(0, m.index + m[0].length + 4).toLowerCase();
+    const esPM = antes.includes('pm') || (!antes.includes('am') && String(hora).toLowerCase().includes('pm'));
+    if (esPM && h < 12) h += 12;
+    return h * 60 + Number(m[2]);
+  }
+
   function renderEntrenos() {
     const u = usuarioActual();
     const cont = $('#lista-entrenos');
+    generarSemana();
     const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+    const misBloques = u.bloques || [];
+    const veTodo = esAdmin(u.correo) || !misBloques.length;
     const proximos = BD.entrenos
       .filter(e => new Date(e.fecha + 'T23:59') >= hoy)
-      .sort((a, b) => a.fecha.localeCompare(b.fecha));
-    if (!proximos.length) { cont.innerHTML = '<div class="vacio">No hay entrenamientos programados por ahora.</div>'; return; }
+      .filter(e => veTodo || e.bloque === 'todos' || misBloques.includes(e.bloque))
+      .sort((a, b) => a.fecha.localeCompare(b.fecha) || minutosDe(a.hora) - minutosDe(b.hora));
+    if (!proximos.length) { cont.innerHTML = '<div class="vacio">No hay entrenamientos de tus bloques esta semana. Revisa tus bloques en <strong>Mi perfil</strong>.</div>'; return; }
     cont.innerHTML = proximos.map(e => {
       const f = new Date(e.fecha + 'T12:00');
       const lista = Object.values(e.asistencias).filter(x => x.va);
@@ -640,7 +716,7 @@
           <div class="mes">${MESES[f.getMonth()]}</div>
         </div>
         <div class="entreno-info">
-          <h3>${escapar(e.hora)} · ${escapar(e.categoria)}</h3>
+          <h3>${escapar(e.hora)} <span class="etiqueta-bloque">${escapar(NOMBRE_BLOQUE[e.bloque] || e.bloque)}</span></h3>
           <div class="detalle">📍 ${escapar(e.lugar)}${e.nota ? ' · 📝 ' + escapar(e.nota) : ''}</div>
           <div class="entreno-asistencia">
             <button class="btn btn-mini ${mio?.va ? 'btn-verde' : 'btn-gris'}" data-asistir="${escapar(e.id)}">✔ Sí voy</button>
@@ -660,7 +736,9 @@
     cont.querySelectorAll('[data-faltar]').forEach(b => b.addEventListener('click', () => marcar(b.dataset.faltar, false)));
     cont.querySelectorAll('[data-borrar-entreno]').forEach(b => b.addEventListener('click', () => {
       if (!confirm('¿Borrar este entrenamiento?')) return;
-      BD.entrenos = BD.entrenos.filter(x => x.id !== b.dataset.borrarEntreno);
+      const id = b.dataset.borrarEntreno;
+      BD.entrenos = BD.entrenos.filter(x => x.id !== id);
+      if (id.startsWith('auto-')) BD.borrados.push(id); // que no se regenere solo
       guardar(BD); renderEntrenos();
     }));
   }
@@ -680,7 +758,7 @@
     BD.entrenos.push({
       id: 'e' + Date.now(),
       fecha, hora,
-      categoria: $('#entreno-categoria').value,
+      bloque: $('#entreno-bloque').value,
       lugar: $('#entreno-lugar').value.trim() || 'Gimnasio Jaguares',
       nota: $('#entreno-nota').value.trim(),
       asistencias: {},
@@ -695,7 +773,7 @@
     const u = usuarioActual();
     $('#perfil-nombre').value = u.nombre;
     $('#perfil-edad').value = u.edad || '';
-    $('#perfil-categoria').value = u.categoria;
+    document.querySelectorAll('#perfil-bloques input').forEach(c => c.checked = (u.bloques || []).includes(c.value));
     $('#perfil-correo').innerHTML = `Correo: <strong>${escapar(u.correo)}</strong>` + (esAdmin(u.correo) ? '<span class="insignia-admin">Admin</span>' : '');
   }
 
@@ -705,7 +783,7 @@
     if (!nombre) { mostrarError('#error-perfil', 'El nombre no puede quedar vacío.'); return; }
     BD.usuarios[u.correo].nombre = nombre;
     BD.usuarios[u.correo].edad = Number($('#perfil-edad').value) || 0;
-    BD.usuarios[u.correo].categoria = $('#perfil-categoria').value;
+    BD.usuarios[u.correo].bloques = [...document.querySelectorAll('#perfil-bloques input:checked')].map(c => c.value);
     guardar(BD);
     const ok = $('#perfil-guardado');
     ok.style.display = 'inline';
@@ -742,7 +820,8 @@
   $('#form-registro').addEventListener('submit', e => {
     e.preventDefault();
     try {
-      registrar($('#reg-nombre').value, $('#reg-edad').value, $('#reg-categoria').value, $('#reg-correo').value, $('#reg-clave').value);
+      const bloques = [...document.querySelectorAll('#reg-bloques input:checked')].map(c => c.value);
+      registrar($('#reg-nombre').value, $('#reg-edad').value, bloques, $('#reg-correo').value, $('#reg-clave').value);
       irAVista('avisos');
       render();
     } catch (err) { mostrarError('#error-auth', err.message); }
