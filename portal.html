@@ -255,6 +255,52 @@
 
     .vacio { text-align: center; color: var(--gris); padding: 30px 10px; font-size: .92rem; }
     .oculto { display: none !important; }
+
+    /* ---------- Galería ---------- */
+    .grid-galeria {
+      display: grid; gap: 12px;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+    @media (max-width: 520px) { .grid-galeria { grid-template-columns: 1fr 1fr; gap: 8px; } }
+    .foto-item {
+      position: relative; border-radius: 12px; overflow: hidden;
+      background: var(--grafito); border: 1px solid rgba(255,255,255,.1);
+      aspect-ratio: 4 / 3;
+    }
+    .foto-item img { width: 100%; height: 100%; object-fit: cover; display: block; cursor: zoom-in; }
+    .foto-item .pie {
+      position: absolute; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(transparent, rgba(0,0,0,.88));
+      color: var(--blanco); font-size: .78rem; font-weight: 600;
+      padding: 22px 10px 8px; pointer-events: none;
+    }
+    .foto-item .borrar-foto {
+      position: absolute; top: 8px; right: 8px;
+      background: rgba(10,10,11,.85); color: #ff90a4;
+      border: 1px solid rgba(228,0,43,.6); border-radius: 8px;
+      width: 32px; height: 32px; font-size: 1rem; cursor: pointer; line-height: 1;
+    }
+    .foto-item .borrar-foto:hover { background: var(--rojo); color: var(--blanco); }
+    .previa-foto { margin-top: 10px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .previa-foto img { width: 120px; height: 90px; object-fit: cover; border-radius: 8px; border: 1px solid rgba(255,255,255,.2); }
+    .aviso-foto { width: 100%; border-radius: 10px; margin-top: 10px; cursor: zoom-in; display: block; }
+    .estado-subida { font-size: .82rem; font-weight: 700; color: #7fe3ab; margin-left: 10px; }
+    .nota-espacio { font-size: .74rem; color: var(--gris); margin-top: 10px; }
+
+    /* ---------- Visor de foto ampliada ---------- */
+    .visor {
+      position: fixed; inset: 0; z-index: 100;
+      background: rgba(5,5,6,.95); display: none;
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .visor.abierto { display: flex; }
+    .visor img { max-width: 100%; max-height: 86vh; border-radius: 10px; }
+    .visor-cerrar {
+      position: absolute; top: 16px; right: 18px;
+      background: transparent; border: 2px solid rgba(255,255,255,.5); color: var(--blanco);
+      width: 42px; height: 42px; border-radius: 50%; font-size: 1.2rem; cursor: pointer;
+    }
+    .visor-cerrar:hover { border-color: var(--rojo); background: var(--rojo); }
   </style>
 </head>
 <body>
@@ -345,6 +391,7 @@
       <div class="tabs-portal">
         <button data-vista="avisos" class="activa" type="button">📣 Avisos</button>
         <button data-vista="entrenos" type="button">📅 Entrenamientos</button>
+        <button data-vista="galeria" type="button">📸 Galería</button>
         <button data-vista="perfil" type="button">👤 Mi perfil</button>
       </div>
 
@@ -379,9 +426,38 @@
             <label for="aviso-enlace">Link de la transmisión</label>
             <input type="url" id="aviso-enlace" placeholder="https://... (YouTube, Facebook Live, etc.)">
           </div>
+          <div class="campo">
+            <label for="aviso-foto">Foto (opcional)</label>
+            <input type="file" id="aviso-foto" accept="image/*">
+            <div id="previa-aviso" class="previa-foto oculto"><img alt="Vista previa de la foto del aviso"><button type="button" class="btn btn-peligro btn-mini" id="btn-quitar-foto-aviso">Quitar foto</button></div>
+          </div>
           <button class="btn btn-rojo btn-mini" id="btn-publicar-aviso" type="button">Publicar</button>
+          <button class="btn btn-gris btn-mini oculto" id="btn-cancelar-edicion" type="button">Cancelar edición</button>
         </div>
         <div class="lista-avisos" id="lista-avisos"></div>
+      </div>
+
+      <!-- ---- Galería ---- -->
+      <div class="vista" id="vista-galeria">
+        <div class="encabezado-vista">
+          <h2>Galería <em>Jaguar</em></h2>
+        </div>
+        <p style="color:var(--gris); font-size:.88rem; margin-bottom:16px;">Fotos de entrenamientos, torneos y campeonatos. Toca cualquiera para verla en grande.</p>
+        <div class="caja-admin oculto" id="admin-galeria">
+          <h3>🛡️ Subir fotos (solo administradores)</h3>
+          <div class="campo">
+            <label for="galeria-archivos">Elige una o varias fotos de tu celular o computadora</label>
+            <input type="file" id="galeria-archivos" accept="image/*" multiple>
+          </div>
+          <div class="campo">
+            <label for="galeria-pie">Descripción (se aplica a las fotos que subas ahora)</label>
+            <input type="text" id="galeria-pie" placeholder="Ej. Campeones Copa Puebla Sports 2026">
+          </div>
+          <button class="btn btn-rojo btn-mini" id="btn-subir-fotos" type="button">Subir fotos</button>
+          <span id="estado-subida" class="estado-subida"></span>
+          <p class="nota-espacio" id="nota-espacio"></p>
+        </div>
+        <div class="grid-galeria" id="grid-galeria"></div>
       </div>
 
       <!-- ---- Entrenamientos ---- -->
@@ -465,6 +541,11 @@
     </div>
   </section>
 
+  <div class="visor" id="visor" role="dialog" aria-modal="true" aria-label="Foto ampliada">
+    <button class="visor-cerrar" id="visor-cerrar" aria-label="Cerrar foto">✕</button>
+    <img id="visor-img" alt="">
+  </div>
+
   <script>
   'use strict';
   /* ==========================================================================
@@ -488,7 +569,16 @@
   function cargar() {
     try { return JSON.parse(localStorage.getItem(LLAVE)) || null; } catch { return null; }
   }
-  function guardar(d) { localStorage.setItem(LLAVE, JSON.stringify(d)); }
+  function guardar(d) {
+    try {
+      localStorage.setItem(LLAVE, JSON.stringify(d));
+    } catch (e) {
+      throw new Error('Ya no cabe más en el modo demo (el navegador solo guarda unas cuantas fotos). Borra algunas fotos, o conectemos la base de datos real para subir todas las que quieran.');
+    }
+  }
+  function espacioUsadoMB() {
+    return ((localStorage.getItem(LLAVE) || '').length / 1048576).toFixed(1);
+  }
 
   function semilla() {
     return {
@@ -502,6 +592,7 @@
       ],
       entrenos: [],
       borrados: [],
+      fotos: [],
     };
   }
 
@@ -510,6 +601,7 @@
   /* --- Migración de datos guardados con el formato anterior --- */
   (function migrar() {
     BD.borrados = BD.borrados || [];
+    BD.fotos = BD.fotos || [];
     for (const correo in BD.usuarios) {
       const u = BD.usuarios[correo];
       if (!u.bloques) {
@@ -626,8 +718,10 @@
       $('#hola-nombre').textContent = u.nombre.split(' ')[0] + (esAdmin(u.correo) ? ' 🛡️' : '');
       $('#admin-aviso').classList.toggle('oculto', !esAdmin(u.correo));
       $('#admin-entreno').classList.toggle('oculto', !esAdmin(u.correo));
+      $('#admin-galeria').classList.toggle('oculto', !esAdmin(u.correo));
       renderAvisos();
       renderEntrenos();
+      renderGaleria();
       renderPerfil();
     }
   }
@@ -647,12 +741,18 @@
           <h3>${escapar(a.titulo)}</h3>
         </div>
         <p>${escapar(a.texto)}</p>
+        ${a.foto ? `<img class="aviso-foto" src="${a.foto}" alt="Foto del aviso: ${escapar(a.titulo)}" data-ver-aviso="${escapar(a.id)}">` : ''}
         ${a.enlace ? `<p style="margin-top:8px;"><a class="enlace-vivo" href="${escapar(a.enlace)}" target="_blank" rel="noopener">▶ Ver transmisión</a></p>` : ''}
         <div class="meta">
-          <span>${escapar(a.autor)} · ${fechaBonita(a.fecha)}</span>
-          ${esAdmin(u.correo) ? `<button class="btn btn-peligro btn-mini" data-borrar-aviso="${escapar(a.id)}">Borrar</button>` : ''}
+          <span>${escapar(a.autor)} · ${fechaBonita(a.fecha)}${a.editado ? ' · editado' : ''}</span>
+          ${esAdmin(u.correo) ? `<span style="display:flex; gap:6px;">
+            <button class="btn btn-gris btn-mini" data-editar-aviso="${escapar(a.id)}">✏️ Editar</button>
+            <button class="btn btn-peligro btn-mini" data-borrar-aviso="${escapar(a.id)}">Borrar</button>
+          </span>` : ''}
         </div>
       </article>`).join('');
+    cont.querySelectorAll('[data-ver-aviso]').forEach(i => i.addEventListener('click', () => abrirVisor(i.src, i.alt)));
+    cont.querySelectorAll('[data-editar-aviso]').forEach(b => b.addEventListener('click', () => editarAviso(b.dataset.editarAviso)));
     cont.querySelectorAll('[data-borrar-aviso]').forEach(b => b.addEventListener('click', () => {
       if (!confirm('¿Borrar este aviso?')) return;
       BD.avisos = BD.avisos.filter(x => x.id !== b.dataset.borrarAviso);
@@ -664,22 +764,171 @@
     $('#campo-enlace').classList.toggle('oculto', e.target.value !== 'envivo');
   });
 
+  /* --- Foto opcional del aviso --- */
+  let fotoAviso = '';       // imagen ya comprimida, lista para guardar
+  let editandoAviso = null; // id del aviso que se está editando
+
+  $('#aviso-foto').addEventListener('change', async e => {
+    const archivo = e.target.files[0];
+    if (!archivo) return;
+    try {
+      fotoAviso = await comprimirImagen(archivo);
+      const previa = $('#previa-aviso');
+      previa.querySelector('img').src = fotoAviso;
+      previa.classList.remove('oculto');
+    } catch (err) { alert(err.message); }
+    e.target.value = '';
+  });
+
+  $('#btn-quitar-foto-aviso').addEventListener('click', () => {
+    fotoAviso = '';
+    $('#previa-aviso').classList.add('oculto');
+  });
+
+  function limpiarFormAviso() {
+    $('#aviso-titulo').value = ''; $('#aviso-texto').value = ''; $('#aviso-enlace').value = '';
+    $('#aviso-tipo').value = 'aviso';
+    $('#campo-enlace').classList.add('oculto');
+    fotoAviso = ''; editandoAviso = null;
+    $('#previa-aviso').classList.add('oculto');
+    $('#btn-publicar-aviso').textContent = 'Publicar';
+    $('#btn-cancelar-edicion').classList.add('oculto');
+    $('#admin-aviso').querySelector('h3').textContent = '🛡️ Publicar aviso (solo administradores)';
+  }
+
+  function editarAviso(id) {
+    const a = BD.avisos.find(x => x.id === id);
+    if (!a) return;
+    editandoAviso = id;
+    $('#aviso-titulo').value = a.titulo;
+    $('#aviso-texto').value = a.texto;
+    $('#aviso-tipo').value = a.tipo;
+    $('#aviso-enlace').value = a.enlace || '';
+    $('#campo-enlace').classList.toggle('oculto', a.tipo !== 'envivo');
+    fotoAviso = a.foto || '';
+    const previa = $('#previa-aviso');
+    if (fotoAviso) { previa.querySelector('img').src = fotoAviso; previa.classList.remove('oculto'); }
+    else previa.classList.add('oculto');
+    $('#btn-publicar-aviso').textContent = 'Guardar cambios';
+    $('#btn-cancelar-edicion').classList.remove('oculto');
+    $('#admin-aviso').querySelector('h3').textContent = '✏️ Editando aviso';
+    $('#admin-aviso').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  $('#btn-cancelar-edicion').addEventListener('click', limpiarFormAviso);
+
   $('#btn-publicar-aviso').addEventListener('click', () => {
     const titulo = $('#aviso-titulo').value.trim();
     const texto = $('#aviso-texto').value.trim();
     if (!titulo || !texto) { alert('Escribe el título y el mensaje.'); return; }
-    BD.avisos.push({
-      id: 'a' + Date.now(),
-      tipo: $('#aviso-tipo').value,
-      titulo, texto,
-      enlace: $('#aviso-tipo').value === 'envivo' ? $('#aviso-enlace').value.trim() : '',
-      autor: usuarioActual().nombre,
-      fecha: Date.now(),
-    });
-    guardar(BD);
-    $('#aviso-titulo').value = ''; $('#aviso-texto').value = ''; $('#aviso-enlace').value = '';
+    const tipo = $('#aviso-tipo').value;
+    const enlace = tipo === 'envivo' ? $('#aviso-enlace').value.trim() : '';
+    const respaldo = JSON.stringify(BD.avisos);
+    if (editandoAviso) {
+      const a = BD.avisos.find(x => x.id === editandoAviso);
+      Object.assign(a, { titulo, texto, tipo, enlace, foto: fotoAviso, editado: Date.now() });
+    } else {
+      BD.avisos.push({
+        id: 'a' + Date.now(), tipo, titulo, texto, enlace, foto: fotoAviso,
+        autor: usuarioActual().nombre, fecha: Date.now(),
+      });
+    }
+    try { guardar(BD); }
+    catch (err) { BD.avisos = JSON.parse(respaldo); alert(err.message); return; }
+    limpiarFormAviso();
     renderAvisos();
   });
+
+  /* ---------------- Galería ----------------
+     Las fotos se reducen antes de guardarse: en modo demo el navegador
+     tiene poco espacio, y así caben muchas más. */
+  const ANCHO_MAX = 1280;
+  const CALIDAD = 0.72;
+
+  function comprimirImagen(archivo) {
+    return new Promise((resolve, reject) => {
+      if (!archivo.type.startsWith('image/')) { reject(new Error('Ese archivo no es una imagen.')); return; }
+      const lector = new FileReader();
+      lector.onerror = () => reject(new Error('No se pudo leer la foto.'));
+      lector.onload = () => {
+        const img = new Image();
+        img.onerror = () => reject(new Error('No se pudo abrir la foto.'));
+        img.onload = () => {
+          const escala = Math.min(1, ANCHO_MAX / img.width);
+          const lienzo = document.createElement('canvas');
+          lienzo.width = Math.round(img.width * escala);
+          lienzo.height = Math.round(img.height * escala);
+          lienzo.getContext('2d').drawImage(img, 0, 0, lienzo.width, lienzo.height);
+          resolve(lienzo.toDataURL('image/jpeg', CALIDAD));
+        };
+        img.src = lector.result;
+      };
+      lector.readAsDataURL(archivo);
+    });
+  }
+
+  function renderGaleria() {
+    const u = usuarioActual();
+    const cont = $('#grid-galeria');
+    const admin = esAdmin(u.correo);
+    $('#nota-espacio').textContent = `Espacio usado en este navegador: ${espacioUsadoMB()} MB de ~5 MB (límite del modo demo). Con la base de datos real no hay este límite.`;
+    const fotos = [...BD.fotos].sort((a, b) => b.fecha - a.fecha);
+    if (!fotos.length) {
+      cont.innerHTML = `<div class="vacio" style="grid-column:1/-1;">Todavía no hay fotos en la galería del equipo.${admin ? ' Sube las primeras con el botón de arriba 📸' : ''}</div>`;
+      return;
+    }
+    cont.innerHTML = fotos.map(f => `
+      <figure class="foto-item">
+        <img src="${f.src}" alt="${escapar(f.pie || 'Foto de la Academia Jaguares NZ')}" data-ver="${escapar(f.id)}">
+        ${f.pie ? `<figcaption class="pie">${escapar(f.pie)}</figcaption>` : ''}
+        ${admin ? `<button class="borrar-foto" data-borrar-foto="${escapar(f.id)}" aria-label="Quitar esta foto" title="Quitar foto">✕</button>` : ''}
+      </figure>`).join('');
+
+    cont.querySelectorAll('[data-ver]').forEach(i => i.addEventListener('click', () => abrirVisor(i.src, i.alt)));
+    cont.querySelectorAll('[data-borrar-foto]').forEach(b => b.addEventListener('click', () => {
+      if (!confirm('¿Quitar esta foto de la galería?')) return;
+      BD.fotos = BD.fotos.filter(x => x.id !== b.dataset.borrarFoto);
+      guardar(BD); renderGaleria();
+    }));
+  }
+
+  $('#btn-subir-fotos').addEventListener('click', async () => {
+    const archivos = [...$('#galeria-archivos').files];
+    if (!archivos.length) { alert('Primero elige las fotos que quieres subir.'); return; }
+    const pie = $('#galeria-pie').value.trim();
+    const estado = $('#estado-subida');
+    const boton = $('#btn-subir-fotos');
+    boton.disabled = true;
+    let subidas = 0;
+    for (let i = 0; i < archivos.length; i++) {
+      estado.textContent = `Subiendo ${i + 1} de ${archivos.length}...`;
+      try {
+        const src = await comprimirImagen(archivos[i]);
+        BD.fotos.push({ id: 'f' + Date.now() + '-' + i, src, pie, autor: usuarioActual().nombre, fecha: Date.now() });
+        guardar(BD);
+        subidas++;
+      } catch (err) {
+        BD.fotos.pop();
+        estado.textContent = '';
+        alert(`Se subieron ${subidas} foto(s). ${err.message}`);
+        break;
+      }
+    }
+    boton.disabled = false;
+    $('#galeria-archivos').value = ''; $('#galeria-pie').value = '';
+    if (subidas) { estado.textContent = `✓ ${subidas} foto(s) subida(s)`; setTimeout(() => estado.textContent = '', 3000); }
+    renderGaleria();
+  });
+
+  /* ---------------- Visor de foto ampliada ---------------- */
+  function abrirVisor(src, alt) {
+    $('#visor-img').src = src;
+    $('#visor-img').alt = alt || '';
+    $('#visor').classList.add('abierto');
+  }
+  function cerrarVisor() { $('#visor').classList.remove('abierto'); $('#visor-img').src = ''; }
+  $('#visor').addEventListener('click', e => { if (e.target.id === 'visor' || e.target.id === 'visor-cerrar') cerrarVisor(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarVisor(); });
 
   /* ---------------- Entrenamientos ---------------- */
   function minutosDe(hora) {
