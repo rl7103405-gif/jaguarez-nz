@@ -301,6 +301,42 @@
       width: 42px; height: 42px; border-radius: 50%; font-size: 1.2rem; cursor: pointer;
     }
     .visor-cerrar:hover { border-color: var(--rojo); background: var(--rojo); }
+
+    /* ---------- Editor de la página pública ---------- */
+    .seccion-editor {
+      background: var(--grafito); border: 1px solid rgba(255,255,255,.1);
+      border-radius: var(--radio); margin-bottom: 12px; overflow: hidden;
+    }
+    .seccion-editor > summary {
+      padding: 15px 18px; cursor: pointer; list-style: none;
+      font-weight: 800; font-size: .96rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    }
+    .seccion-editor > summary::-webkit-details-marker { display: none; }
+    .seccion-editor > summary::after { content: '▾'; color: var(--rojo); font-size: 1.1rem; }
+    .seccion-editor[open] > summary::after { content: '▴'; }
+    .seccion-editor > summary:hover { background: rgba(255,255,255,.04); }
+    .cuerpo-seccion { padding: 4px 18px 18px; border-top: 1px solid rgba(255,255,255,.08); }
+    .nota-seccion { color: var(--gris); font-size: .82rem; margin: 12px 0; }
+    .foto-editable { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .foto-editable img {
+      width: 130px; height: 92px; object-fit: cover;
+      border-radius: 8px; border: 1px solid rgba(255,255,255,.2); background: var(--negro);
+    }
+    .acciones-seccion { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 6px; }
+    .guardado-ok { color: #7fe3ab; font-size: .8rem; font-weight: 700; }
+    .foto-item.escondida img { opacity: .28; filter: grayscale(1); }
+    .foto-item .sello-escondida {
+      position: absolute; inset: auto 0 50% 0; text-align: center;
+      font-size: .74rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+      color: #ffb3c0; pointer-events: none;
+    }
+    .origen-foto {
+      position: absolute; top: 8px; left: 8px;
+      background: rgba(10,10,11,.8); color: var(--gris);
+      font-size: .62rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+      padding: 3px 8px; border-radius: 6px;
+    }
   </style>
 </head>
 <body>
@@ -392,6 +428,7 @@
         <button data-vista="avisos" class="activa" type="button">📣 Avisos</button>
         <button data-vista="entrenos" type="button">📅 Entrenamientos</button>
         <button data-vista="galeria" type="button">📸 Galería</button>
+        <button data-vista="pagina" type="button" id="tab-pagina">⚙️ Página web</button>
         <button data-vista="perfil" type="button">👤 Mi perfil</button>
       </div>
 
@@ -458,6 +495,21 @@
           <p class="nota-espacio" id="nota-espacio"></p>
         </div>
         <div class="grid-galeria" id="grid-galeria"></div>
+      </div>
+
+      <!-- ---- Editor de la página pública ---- -->
+      <div class="vista" id="vista-pagina">
+        <div class="encabezado-vista">
+          <h2>Editar la <em>página</em></h2>
+        </div>
+        <p style="color:var(--gris); font-size:.88rem; margin-bottom:8px;">
+          Aquí se cambia lo que ve la gente en la página pública: textos, fotos, el patrocinador, la dirección del gimnasio y los datos de contacto.
+        </p>
+        <p style="color:var(--gris); font-size:.82rem; margin-bottom:18px;">
+          💡 Para resaltar una palabra use <strong>*asteriscos*</strong> (negritas) o <em>_guiones bajos_</em> (cursivas), igual que en WhatsApp.
+        </p>
+        <div id="editor-secciones"></div>
+        <a class="btn btn-borde btn-mini" href="index.html" target="_blank" rel="noopener" style="margin-top:8px;">👁️ Ver la página</a>
       </div>
 
       <!-- ---- Entrenamientos ---- -->
@@ -546,6 +598,7 @@
     <img id="visor-img" alt="">
   </div>
 
+  <script src="contenido-sitio.js"></script>
   <script>
   'use strict';
   /* ==========================================================================
@@ -719,9 +772,11 @@
       $('#admin-aviso').classList.toggle('oculto', !esAdmin(u.correo));
       $('#admin-entreno').classList.toggle('oculto', !esAdmin(u.correo));
       $('#admin-galeria').classList.toggle('oculto', !esAdmin(u.correo));
+      $('#tab-pagina').classList.toggle('oculto', !esAdmin(u.correo)); // editar la página es solo de admins
       renderAvisos();
       renderEntrenos();
       renderGaleria();
+      renderEditor();
       renderPerfil();
     }
   }
@@ -867,29 +922,82 @@
     });
   }
 
+  /* Fotos que ya viven en la página pública (carpeta assets/galeria del sitio).
+     Se piden una sola vez y se recuerdan mientras dure la sesión. */
+  let fotosDelSitio = null;
+  const CARPETA_SITIO = 'assets/galeria';
+
+  function pedirFotosDelSitio() {
+    if (fotosDelSitio) return Promise.resolve(fotosDelSitio);
+    return fetch('https://api.github.com/repos/rl7103405-gif/jaguarez-nz/contents/' + CARPETA_SITIO)
+      .then(r => r.ok ? r.json() : Promise.reject(r.status))
+      .then(a => {
+        fotosDelSitio = a.filter(x => x.type === 'file' && /\.(jpe?g|png|webp|gif)$/i.test(x.name)).map(x => x.name);
+        return fotosDelSitio;
+      })
+      .catch(() => (fotosDelSitio = []));
+  }
+
   function renderGaleria() {
     const u = usuarioActual();
     const cont = $('#grid-galeria');
     const admin = esAdmin(u.correo);
     $('#nota-espacio').textContent = `Espacio usado en este navegador: ${espacioUsadoMB()} MB de ~5 MB (límite del modo demo). Con la base de datos real no hay este límite.`;
-    const fotos = [...BD.fotos].sort((a, b) => b.fecha - a.fecha);
-    if (!fotos.length) {
-      cont.innerHTML = `<div class="vacio" style="grid-column:1/-1;">Todavía no hay fotos en la galería del equipo.${admin ? ' Sube las primeras con el botón de arriba 📸' : ''}</div>`;
-      return;
-    }
-    cont.innerHTML = fotos.map(f => `
-      <figure class="foto-item">
-        <img src="${f.src}" alt="${escapar(f.pie || 'Foto de la Academia Jaguares NZ')}" data-ver="${escapar(f.id)}">
-        ${f.pie ? `<figcaption class="pie">${escapar(f.pie)}</figcaption>` : ''}
-        ${admin ? `<button class="borrar-foto" data-borrar-foto="${escapar(f.id)}" aria-label="Quitar esta foto" title="Quitar foto">✕</button>` : ''}
-      </figure>`).join('');
 
-    cont.querySelectorAll('[data-ver]').forEach(i => i.addEventListener('click', () => abrirVisor(i.src, i.alt)));
-    cont.querySelectorAll('[data-borrar-foto]').forEach(b => b.addEventListener('click', () => {
-      if (!confirm('¿Quitar esta foto de la galería?')) return;
-      BD.fotos = BD.fotos.filter(x => x.id !== b.dataset.borrarFoto);
-      guardar(BD); renderGaleria();
-    }));
+    pedirFotosDelSitio().then(delSitio => {
+      const escondidas = ContenidoSitio.ocultas();
+      const subidas = [...BD.fotos].sort((a, b) => b.fecha - a.fecha).map(f => ({
+        clase: '', origen: 'Subida', src: f.src, pie: f.pie || '', boton: `data-borrar-foto="${escapar(f.id)}"`, titulo: 'Quitar foto',
+      }));
+      const delRepo = delSitio.map(nombre => {
+        const oculta = escondidas.includes(nombre);
+        return {
+          clase: oculta ? 'escondida' : '', origen: oculta ? 'Escondida' : 'En la página',
+          src: `${CARPETA_SITIO}/${encodeURIComponent(nombre)}`,
+          pie: nombre.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' '),
+          boton: `data-ocultar-foto="${escapar(nombre)}"`,
+          titulo: oculta ? 'Volver a mostrar en la página' : 'Quitar de la página',
+          icono: oculta ? '↺' : '✕',
+        };
+      });
+      const todas = [...subidas, ...delRepo];
+
+      if (!todas.length) {
+        cont.innerHTML = `<div class="vacio" style="grid-column:1/-1;">Todavía no hay fotos.${admin ? ' Sube las primeras con el botón de arriba 📸' : ''}</div>`;
+        return;
+      }
+
+      cont.innerHTML = todas.map(f => `
+        <figure class="foto-item ${f.clase}">
+          <img src="${f.src}" alt="${escapar(f.pie || 'Foto de la Academia Jaguares NZ')}" data-ver>
+          ${admin ? `<span class="origen-foto">${escapar(f.origen)}</span>` : ''}
+          ${f.clase === 'escondida' ? '<span class="sello-escondida">No se ve en la página</span>' : ''}
+          ${f.pie ? `<figcaption class="pie">${escapar(f.pie)}</figcaption>` : ''}
+          ${admin ? `<button class="borrar-foto" ${f.boton} aria-label="${escapar(f.titulo)}" title="${escapar(f.titulo)}">${f.icono || '✕'}</button>` : ''}
+        </figure>`).join('');
+
+      cont.querySelectorAll('[data-ver]').forEach(i => i.addEventListener('click', () => abrirVisor(i.src, i.alt)));
+
+      cont.querySelectorAll('[data-borrar-foto]').forEach(b => b.addEventListener('click', () => {
+        if (!confirm('¿Quitar esta foto? Dejará de verse en la página.')) return;
+        BD.fotos = BD.fotos.filter(x => x.id !== b.dataset.borrarFoto);
+        guardar(BD); renderGaleria();
+      }));
+
+      cont.querySelectorAll('[data-ocultar-foto]').forEach(b => b.addEventListener('click', () => {
+        const nombre = b.dataset.ocultarFoto;
+        const cambios = ContenidoSitio.leer();
+        const lista = Array.isArray(cambios['galeria.ocultas']) ? cambios['galeria.ocultas'] : [];
+        if (lista.includes(nombre)) {
+          cambios['galeria.ocultas'] = lista.filter(x => x !== nombre);
+        } else {
+          if (!confirm('¿Quitar esta foto de la página? Después la puedes volver a mostrar desde aquí.')) return;
+          cambios['galeria.ocultas'] = [...lista, nombre];
+        }
+        ContenidoSitio.escribir(cambios);
+        renderGaleria();
+      }));
+    });
   }
 
   $('#btn-subir-fotos').addEventListener('click', async () => {
@@ -919,6 +1027,113 @@
     if (subidas) { estado.textContent = `✓ ${subidas} foto(s) subida(s)`; setTimeout(() => estado.textContent = '', 3000); }
     renderGaleria();
   });
+
+  /* ---------------- Editor de la página pública ----------------
+     Arma un formulario por cada sección a partir de contenido-sitio.js.
+     Lo que se guarda aquí es lo que la página pública muestra. */
+  function renderEditor() {
+    if (!esAdmin(usuarioActual().correo)) return;
+    const cont = $('#editor-secciones');
+    if (cont.dataset.listo) return; // se arma una sola vez
+    cont.dataset.listo = '1';
+
+    cont.innerHTML = ContenidoSitio.SECCIONES.map(sec => `
+      <details class="seccion-editor" data-seccion="${sec.id}">
+        <summary>${escapar(sec.titulo)}</summary>
+        <div class="cuerpo-seccion">
+          ${sec.nota ? `<p class="nota-seccion">${escapar(sec.nota)}</p>` : ''}
+          ${sec.campos.map(c => campoHTML(c)).join('')}
+          <div class="acciones-seccion">
+            <button class="btn btn-rojo btn-mini" data-guardar="${sec.id}" type="button">Guardar cambios</button>
+            <button class="btn btn-gris btn-mini" data-restaurar="${sec.id}" type="button">Restaurar original</button>
+            <span class="guardado-ok" data-ok="${sec.id}" style="display:none;">✓ Guardado</span>
+          </div>
+        </div>
+      </details>`).join('');
+
+    cargarValoresEditor();
+
+    cont.querySelectorAll('[data-foto-campo]').forEach(inp => {
+      inp.addEventListener('change', async e => {
+        const archivo = e.target.files[0];
+        if (!archivo) return;
+        try {
+          const src = await comprimirImagen(archivo);
+          cont.querySelector(`img[data-previa="${inp.dataset.fotoCampo}"]`).src = src;
+        } catch (err) { alert(err.message); }
+        e.target.value = '';
+      });
+    });
+
+    cont.querySelectorAll('[data-guardar]').forEach(b => b.addEventListener('click', () => guardarSeccion(b.dataset.guardar)));
+    cont.querySelectorAll('[data-restaurar]').forEach(b => b.addEventListener('click', () => restaurarSeccion(b.dataset.restaurar)));
+  }
+
+  function campoHTML(c) {
+    const id = 'ed-' + c.clave.replace(/\./g, '-');
+    if (c.tipo === 'foto') {
+      return `<div class="campo">
+        <label>${escapar(c.etiqueta)}</label>
+        <div class="foto-editable">
+          <img data-previa="${escapar(c.clave)}" alt="Vista previa de ${escapar(c.etiqueta)}">
+          <input type="file" accept="image/*" data-foto-campo="${escapar(c.clave)}" style="flex:1; min-width:180px;">
+        </div>
+      </div>`;
+    }
+    const etiqueta = `<label for="${id}">${escapar(c.etiqueta)}</label>`;
+    return c.tipo === 'parrafo'
+      ? `<div class="campo">${etiqueta}<textarea id="${id}" data-campo="${escapar(c.clave)}"></textarea></div>`
+      : `<div class="campo">${etiqueta}<input type="text" id="${id}" data-campo="${escapar(c.clave)}"></div>`;
+  }
+
+  function cargarValoresEditor() {
+    const cont = $('#editor-secciones');
+    cont.querySelectorAll('[data-campo]').forEach(el => { el.value = ContenidoSitio.valor(el.dataset.campo) || ''; });
+    cont.querySelectorAll('img[data-previa]').forEach(img => { img.src = ContenidoSitio.valor(img.dataset.previa) || ''; });
+  }
+
+  function clavesDe(idSeccion) {
+    const sec = ContenidoSitio.SECCIONES.find(s => s.id === idSeccion);
+    return sec ? sec.campos.map(c => c.clave) : [];
+  }
+
+  function avisarGuardado(idSeccion) {
+    const ok = $(`[data-ok="${idSeccion}"]`);
+    ok.style.display = 'inline';
+    setTimeout(() => ok.style.display = 'none', 2600);
+  }
+
+  function guardarSeccion(idSeccion) {
+    const cont = $('#editor-secciones');
+    const cambios = ContenidoSitio.leer();
+    const respaldo = JSON.stringify(cambios);
+    clavesDe(idSeccion).forEach(clave => {
+      const campo = cont.querySelector(`[data-campo="${clave}"]`);
+      if (campo) {
+        const v = campo.value.trim();
+        if (v === (ContenidoSitio.DEFECTO[clave] || '')) delete cambios[clave];
+        else cambios[clave] = v;
+        return;
+      }
+      const img = cont.querySelector(`img[data-previa="${clave}"]`);
+      if (img && img.src) {
+        // solo se guarda si el administrador puso una foto nueva
+        if (img.src.startsWith('data:')) cambios[clave] = img.src;
+      }
+    });
+    try { ContenidoSitio.escribir(cambios); }
+    catch (err) { ContenidoSitio.escribir(JSON.parse(respaldo)); alert(err.message); return; }
+    avisarGuardado(idSeccion);
+  }
+
+  function restaurarSeccion(idSeccion) {
+    if (!confirm('¿Regresar esta sección a su contenido original? Se pierden los cambios que hayan hecho aquí.')) return;
+    const cambios = ContenidoSitio.leer();
+    clavesDe(idSeccion).forEach(clave => delete cambios[clave]);
+    ContenidoSitio.escribir(cambios);
+    cargarValoresEditor();
+    avisarGuardado(idSeccion);
+  }
 
   /* ---------------- Visor de foto ampliada ---------------- */
   function abrirVisor(src, alt) {
