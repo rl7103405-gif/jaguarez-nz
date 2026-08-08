@@ -161,6 +161,92 @@
     } catch { return []; }
   }
 
+  /* ---------------- Secciones que crean los administradores ----------------
+     Cada sección es un bloque nuevo de la página (por ejemplo "Nuestros
+     coaches" o "Jugadores becados") con una lista de tarjetas: foto, nombre,
+     un dato corto y una descripción. */
+  const LLAVE_SECCIONES = 'secciones.nuevas';
+
+  const PLANTILLAS = [
+    {
+      nombre: '👥 Nuestros coaches',
+      kicker: 'Quién los entrena',
+      titulo: 'Nuestros *coaches*',
+      intro: 'El equipo que está en la duela con sus hijos todos los días.',
+      etiquetaItem: 'coach',
+      items: [{ nombre: 'Nombre del coach', detalle: 'Bloque 2 · Mar, Jue y Sáb', texto: 'Escribe aquí su experiencia y logros.', foto: '' }],
+    },
+    {
+      nombre: '🎓 Jugadores becados',
+      kicker: 'Orgullo Jaguar',
+      titulo: 'Jugadores *becados*',
+      intro: 'Nuestros egresados que consiguieron una beca deportiva.',
+      etiquetaItem: 'jugador',
+      items: [{ nombre: 'Nombre del jugador', detalle: 'Beca en la universidad', texto: 'Cuenta aquí su historia en la academia.', foto: '' }],
+    },
+    {
+      nombre: '➕ Sección en blanco',
+      kicker: '',
+      titulo: 'Título de la sección',
+      intro: '',
+      etiquetaItem: 'tarjeta',
+      items: [{ nombre: 'Título', detalle: '', texto: 'Descripción.', foto: '' }],
+    },
+  ];
+
+  function secciones() {
+    const l = leer()[LLAVE_SECCIONES];
+    return Array.isArray(l) ? l : [];
+  }
+  function guardarSecciones(lista) {
+    const cambios = leer();
+    cambios[LLAVE_SECCIONES] = lista;
+    escribir(cambios);
+  }
+
+  /* Dibuja en la página pública las secciones creadas desde el portal */
+  function pintarSecciones(doc) {
+    doc = doc || document;
+    const zona = doc.getElementById('secciones-nuevas');
+    if (!zona) return;
+    const lista = secciones().filter(s => s.visible !== false);
+    zona.innerHTML = lista.map((s, i) => `
+      <section class="seccion-nueva ${i % 2 ? 'alterna' : ''}" id="sec-${escapar(s.id)}">
+        <div class="contenedor">
+          <div class="revelar" style="text-align:center;">
+            ${s.kicker ? `<span class="kicker" style="justify-content:center;">${escapar(s.kicker)}</span>` : ''}
+            <h2 class="titulo-seccion">${aHTML(s.titulo)}</h2>
+            ${s.intro ? `<p class="sub-seccion">${aHTML(s.intro)}</p>` : ''}
+          </div>
+          <div class="grid-personas">
+            ${(s.items || []).map((it, n) => `
+              <article class="tarjeta-persona revelar" data-delay="${(n % 3) + 1}">
+                ${it.foto
+                  ? `<img class="retrato" src="${it.foto}" alt="${escapar(it.nombre)}" loading="lazy">`
+                  : `<div class="retrato sin-foto" aria-hidden="true">🐆</div>`}
+                <h3>${escapar(it.nombre)}</h3>
+                ${it.detalle ? `<span class="dato-persona">${escapar(it.detalle)}</span>` : ''}
+                ${it.texto ? `<p>${aHTML(it.texto)}</p>` : ''}
+              </article>`).join('')}
+          </div>
+        </div>
+      </section>`).join('');
+
+    // Solo las secciones marcadas para ello aparecen en el menú de arriba,
+    // porque agregar demasiadas lo dejaría sin espacio.
+    const menu = doc.getElementById('menu');
+    if (menu) {
+      menu.querySelectorAll('[data-menu-nuevo]').forEach(el => el.remove());
+      const antesDe = menu.querySelector('.nav-cta')?.parentElement;
+      lista.filter(s => s.enMenu).forEach(s => {
+        const li = doc.createElement('li');
+        li.setAttribute('data-menu-nuevo', '');
+        li.innerHTML = `<a href="#sec-${escapar(s.id)}">${escapar(String(s.titulo).replace(/[*_]/g, ''))}</a>`;
+        if (antesDe) menu.insertBefore(li, antesDe); else menu.appendChild(li);
+      });
+    }
+  }
+
   /* ---------------- Texto con *negritas* y _cursivas_ ---------------- */
   function escapar(t) {
     return String(t ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -210,9 +296,10 @@
   }
 
   global.ContenidoSitio = {
-    DEFECTO, SECCIONES,
+    DEFECTO, SECCIONES, PLANTILLAS,
     leer, escribir, valor, aplicar, aHTML, escapar,
     ocultas, fotosSubidas,
+    secciones, guardarSecciones, pintarSecciones,
     LLAVE_CONTENIDO,
   };
 })(window);
